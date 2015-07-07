@@ -83,6 +83,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bockus.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        )
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
