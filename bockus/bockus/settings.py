@@ -101,6 +101,15 @@ DATABASES = {
     }
 }
 
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'pjj@philipjohnjames.com'
+EMAIL_HOST_PASSWORD = get_env_variable('MANDRILL_KEY')
+DEFAULT_FROM_EMAIL = 'site@inkpebble.com'
+SERVER_EMAIL = 'site@inkpebble.com'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
