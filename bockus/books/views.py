@@ -2,6 +2,7 @@ import dropbox
 
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import (
     get_object_or_404,
@@ -64,6 +65,11 @@ class EditBookView(UpdateView):
 
         return context
 
+    def form_valid(self, form):
+        messages.success(self.request, "{} updated".format(self.object))
+
+        return super(EditBookView, self).form_valid(form)
+
 
 class DeleteBookView(DeleteView):
 
@@ -72,6 +78,11 @@ class DeleteBookView(DeleteView):
 
     def get_success_url(self):
         return reverse('book-list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "{} deleted".format(self.object))
+
+        return super(DeleteBookView, self).form_valid(form)
 
 
 class SendBookView(View):
@@ -107,4 +118,5 @@ class SendBookView(View):
             metadata.get('mime_type'),
         )
         message.send()
+        messages.add_message(request, messages.SUCCESS, 'Book emailed!')
         return redirect(book)

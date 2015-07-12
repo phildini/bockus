@@ -1,5 +1,13 @@
 <h1>Books</h1>
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <ul>
   {% for book in object_list %}
     <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a> (<a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a>)</li>
