@@ -10,4 +10,5 @@
 
 <p>{{ book.title }}</p>
 
-<a href="{% url 'book-send' pk=book.id %}">Send Book</a>
+<p><a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a> | <a href="{% url 'book-send' pk=book.id %}">Send Book</a></p>
+<p><a href="{% url "book-list" %}">back to list</a></p>
