@@ -13,5 +13,20 @@ urlpatterns = patterns('',
         r'^(?P<pk>\d+)/send/$',
         books.views.SendBookView.as_view(),
         name='book-send',
-    )
+    ),
+    # url(
+    #     r'^new$',
+    #     books.views.CreateBookView.as_view(),
+    #     name='book-new',
+    # ),
+    url(
+        r'^edit/(?P<pk>\d+)/$',
+        books.views.EditBookView.as_view(),
+        name='book-edit',
+    ),
+    url(
+        r'^delete/(?P<pk>\d+)/$',
+        books.views.DeleteBookView.as_view(),
+        name='book-delete',
+    ),
 )

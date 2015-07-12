@@ -2,6 +2,6 @@
 
 <ul>
   {% for book in object_list %}
-    <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a></li>
+    <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a> (<a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a>)</li>
   {% endfor %}
 </ul>

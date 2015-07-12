@@ -1,12 +1,20 @@
 import dropbox
 
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import (
     get_object_or_404,
     redirect,
 )
-from django.views.generic import View, ListView, DetailView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+    View,
+)
 
 from allauth.socialaccount.models import SocialApp, SocialToken
 
@@ -27,14 +35,57 @@ class BookView(DetailView):
     model = Book
     template_name = "book.html"
 
+
+class CreateBookView(CreateView):
+
+    model = Book
+    template_name = "add_or_edit_book.html"
+    fields = ['title',]
+
+    def get_success_url(self):
+        return reverse('book-list')
+
+
+class EditBookView(UpdateView):
+
+    model = Book
+    template_name = "add_or_edit_book.html"
+    fields = ['title',]
+
+    def get_success_url(self):
+        return reverse('book-detail', args=[self.object.pk])
+
+    def get_context_data(self, **kwargs):
+        context = super(EditBookView, self).get_context_data(**kwargs)
+        context['action'] = reverse(
+            'book-edit',
+            kwargs={'pk': self.get_object().id},
+        )
+
+        return context
+
+
+class DeleteBookView(DeleteView):
+
+    model = Book
+    template_name = "book_delete.html"
+
+    def get_success_url(self):
+        return reverse('book-list')
+
+
 class SendBookView(View):
-    
+
     def get(self, request, *args, **kwargs):
         book = get_object_or_404(Book.objects, pk=kwargs.get('pk'))
-        dropbox_app_creds = SocialApp.objects.filter(
-            provider='dropbox_oauth2'
+        book_file_version = BookFileVersion.objects.filter(
+            book=book,
         )[0]
+        book_file_path = book_file_version.path
         try:
+            dropbox_app_creds = SocialApp.objects.filter(
+                provider='dropbox_oauth2'
+            )[0]
             token = SocialToken.objects.get(
                 account__user=request.user,
                 app__provider='dropbox_oauth2'
@@ -42,10 +93,6 @@ class SendBookView(View):
         except:
             raise Http404()
         client = dropbox.client.DropboxClient(token)
-        book_file_version = BookFileVersion.objects.filter(
-            book=book,
-        )[0]
-        book_file_path = book_file_version.path
 
         message = EmailMessage(
             subject='A book for you!',

@@ -1,0 +1,11 @@
+<h1>Delete Book</h1>
+
+<p>Are you sure you want to delete the book "{{ book }}"?</p>
+<p>(Note, this will not delete ebook files)</p>
+
+<form action="{% url "book-delete" pk=book.id %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url "book-list" %}">No, cancel.</a>
+</form>

@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 import books.urls
+from books.views import BookListView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^books/', include(books.urls)),
+    url(r'^$', BookListView.as_view()),
 ]
