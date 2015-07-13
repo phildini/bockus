@@ -24,6 +24,8 @@ from .models import (
     BookFileVersion,
 )
 
+from readers.models import Reader
+
 
 class BookListView(ListView):
 
@@ -35,6 +37,12 @@ class BookView(DetailView):
 
     model = Book
     template_name = "book.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(BookView, self).get_context_data(**kwargs)
+        context['readers'] = Reader.objects.filter(user=self.request.user)
+
+        return context
 
 
 class CreateBookView(CreateView):
@@ -89,6 +97,7 @@ class SendBookView(View):
 
     def get(self, request, *args, **kwargs):
         book = get_object_or_404(Book.objects, pk=kwargs.get('pk'))
+        reader = get_object_or_404(Reader.objects, pk=kwargs.get('reader'))
         book_file_version = BookFileVersion.objects.filter(
             book=book,
         )[0]
@@ -109,7 +118,7 @@ class SendBookView(View):
             subject='A book for you!',
             body=book.title,
             from_email="books@inkpebble.com",
-            to=['pjj@philipjohnjames.com'],
+            to=[reader.email,],
         )
         f, metadata = client.get_file_and_metadata(book_file_path)
         message.attach(

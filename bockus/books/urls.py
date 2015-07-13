@@ -10,7 +10,7 @@ urlpatterns = patterns('',
         name='book-detail',
     ),
     url(
-        r'^(?P<pk>\d+)/send/$',
+        r'^(?P<pk>\d+)/send/(?P<reader>\d+)/$',
         books.views.SendBookView.as_view(),
         name='book-send',
     ),

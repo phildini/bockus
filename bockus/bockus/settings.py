@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.dropbox_oauth2',
     'books',
     'troves',
+    'readers',
 )
 
 MIDDLEWARE_CLASSES = (
