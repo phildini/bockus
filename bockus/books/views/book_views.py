@@ -19,7 +19,7 @@ from django.views.generic import (
 
 from allauth.socialaccount.models import SocialApp, SocialToken
 
-from .models import (
+from books.models import (
     Book,
     BookFileVersion,
 )
@@ -49,7 +49,7 @@ class CreateBookView(CreateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
-    fields = ['title',]
+    fields = ['title', 'author', 'series', 'number_in_series']
 
     def get_success_url(self):
         return reverse('book-list')
@@ -59,7 +59,7 @@ class EditBookView(UpdateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
-    fields = ['title',]
+    fields = ['title', 'author', 'series', 'number_in_series']
 
     def get_success_url(self):
         return reverse('book-detail', args=[self.object.pk])

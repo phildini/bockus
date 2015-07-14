@@ -1,0 +1,19 @@
+<h1>Edit Series</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form action="{{ action }}" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ form.as_ul }}
+  </ul>
+  <input id="save_series" type="submit" value="Save" />
+</form>
+
+<a href="{% url "series-list" %}">back to list</a>

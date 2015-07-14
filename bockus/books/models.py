@@ -8,6 +8,9 @@ from troves.models import Trove
 class Book(TimeStampedModel):
 
     title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255, null=True)
+    series = models.ForeignKey('Series', null=True)
+    number_in_series = models.IntegerField(null=True)
     meta = JSONField()
 
     def __str__(self):
@@ -44,6 +47,19 @@ class BookFileVersion(TimeStampedModel):
 
     def __str__(self):
         return "{} - {}".format(self.book.title, self.filetype)
+
+
+class Series(TimeStampedModel):
+
+    name = models.CharField(max_length=255)
+    author = models.CharField(max_length=255, null=True)
+
+    def __str__(self):
+        return "{} by {}".format(self.name, self.author)
+
+    def get_absolute_url(self):
+        return reverse('series-detail', kwargs={'pk': self.id})
+
 
 
 

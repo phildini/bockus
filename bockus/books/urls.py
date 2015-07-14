@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 import books.views
 
-urlpatterns = patterns('',
+bookpatterns = patterns('',
     url(r'^$', books.views.BookListView.as_view(), name='book-list'),
     url(
         r'^(?P<pk>\d+)/$',
@@ -28,5 +28,29 @@ urlpatterns = patterns('',
         r'^delete/(?P<pk>\d+)/$',
         books.views.DeleteBookView.as_view(),
         name='book-delete',
+    ),
+)
+
+seriespatterns = patterns('',
+    url(r'^$', books.views.SeriesListView.as_view(), name='series-list'),
+    url(
+        r'^(?P<pk>\d+)/$',
+        books.views.SeriesView.as_view(),
+        name='series-detail',
+    ),
+    url(
+        r'^new$',
+        books.views.CreateSeriesView.as_view(),
+        name='series-create',
+    ),
+    url(
+        r'^edit/(?P<pk>\d+)/$',
+        books.views.EditSeriesView.as_view(),
+        name='series-edit',
+    ),
+    url(
+        r'^delete/(?P<pk>\d+)/$',
+        books.views.DeleteSeriesView.as_view(),
+        name='series-delete',
     ),
 )

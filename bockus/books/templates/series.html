@@ -1,0 +1,14 @@
+<h1>{{ series }}</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<p>{{ series.name }}</p>
+
+<p><a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a></p>
+<p><a href="{% url "series-list" %}">back to list</a></p>

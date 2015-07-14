@@ -21,6 +21,7 @@ from books.views import BookListView
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^books/', include(books.urls)),
+    url(r'^books/', include(books.urls.bookpatterns)),
+    url(r'^series/', include(books.urls.seriespatterns)),
     url(r'^$', BookListView.as_view()),
 ]
