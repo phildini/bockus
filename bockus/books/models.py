@@ -31,6 +31,10 @@ class Book(TimeStampedModel):
     def get_absolute_url(self):
         return reverse('book-detail', kwargs={'pk': self.id})
 
+    @property
+    def is_book(self):
+        return True
+
 
 class BookFileVersion(TimeStampedModel):
     DROPBOX = 'dropbox'
@@ -71,6 +75,10 @@ class Series(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('series-detail', kwargs={'pk': self.id})
+
+    @property
+    def is_series(self):
+        return True
 
 
 

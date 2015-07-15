@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
+    url(r'^search/', include('haystack.urls')),
     url(r'^$', BookListView.as_view()),
 ]
