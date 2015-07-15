@@ -14,7 +14,19 @@ class Book(TimeStampedModel):
     meta = JSONField()
 
     def __str__(self):
-        return self.title
+        string = self.title
+        if self.author:
+            string = "{} by {}".format(string, self.author)
+        if self.series:
+            if self.number_in_series:
+                string = "{} ({} {})".format(
+                    string,
+                    self.series.name,
+                    self.number_in_series,
+                )
+            else:
+                string = "{} ({})".format(string, self.series.name)
+        return string
 
     def get_absolute_url(self):
         return reverse('book-detail', kwargs={'pk': self.id})

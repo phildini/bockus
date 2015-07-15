@@ -31,6 +31,7 @@ class BookListView(ListView):
 
     model = Book
     template_name = "book_list.html"
+    ordering = '-author'
 
 
 class BookView(DetailView):
