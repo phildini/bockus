@@ -31,8 +31,13 @@ class BookListView(ListView):
 
     model = Book
     template_name = "book_list.html"
-    ordering = '-author'
 
+    def get_queryset(self):
+        return Book.objects.all().order_by(
+            'author',
+            'series',
+            'number_in_series',
+        )
 
 class BookView(DetailView):
 

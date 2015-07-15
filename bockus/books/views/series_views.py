@@ -19,6 +19,8 @@ from books.models import (
     Series,
 )
 
+from readers.models import Reader
+
 
 class SeriesListView(ListView):
 
@@ -29,15 +31,16 @@ class SeriesListView(ListView):
 class SeriesView(DetailView):
 
     model = Series
-    template_name = "series_detail.html"
+    template_name = "series.html"
 
     def get_context_data(self, **kwargs):
         context = super(SeriesView, self).get_context_data(**kwargs)
         context['books'] = Book.objects.filter(
             series=self.get_object(),
         ).order_by(
-            '-number_in_series',
+            'number_in_series',
         )
+        context['readers'] = Reader.objects.filter(user=self.request.user)
         return context
 
 class CreateSeriesView(CreateView):
