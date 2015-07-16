@@ -1,5 +1,7 @@
-<h1>Series</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - Series{% endblock %}
+{% block content %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -8,13 +10,11 @@
 </ul>
 {% endif %}
 
-<form method="get" action="/search">
-    <input type="text" name="q" id="id_q">
-    <input type="submit" value="Search">
-</form>
+{% include "search_form.html" %}
 
 <ul>
   {% for series in object_list %}
     <li class="series"><a href="{{ series.get_absolute_url }}">{{ series }}</a> (<a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a>)</li>
   {% endfor %}
 </ul>
+{% endblock %}

@@ -1,5 +1,7 @@
-<h1>{{ book }}</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - {{ book }}{% endblock %}
+{% block content %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -13,3 +15,4 @@
 <p><a href="{% url "book-send" pk=book.id reader=reader.id %}">Send Book to {{ reader }}</a></p>
 {% endfor %}
 <p><a href="{% url "book-list" %}">back to list</a></p>
+{% endblock %}

@@ -1,5 +1,7 @@
-<h1>Edit Book</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - Edit Book{% endblock %}
+{% block content %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -17,3 +19,4 @@
 </form>
 
 <a href="{% url "book-list" %}">back to list</a>
+{% endblock %}

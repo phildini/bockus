@@ -1,5 +1,7 @@
-<h1>Delete Book</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - Delete Book{% endblock %}
+{% block content %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -17,3 +19,4 @@
   <input type="submit" value="Yes, delete." />
   <a href="{% url "book-list" %}">No, cancel.</a>
 </form>
+{% endblock %}

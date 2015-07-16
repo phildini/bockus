@@ -1,5 +1,7 @@
-<h2>Search</h2>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - Search{% endblock %}
+{% block content %}
 <form method="get" action="/search">
     {{ form.as_p }}
     <input type="submit" value="Search">
@@ -25,3 +27,4 @@
         </div>
     {% endif %}
 {% endif %}
+{% endblock %}

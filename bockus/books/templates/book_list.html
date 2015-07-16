@@ -1,5 +1,7 @@
-<h1>Books</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - Books{% endblock %}
+{% block content %}
 <h2><a href="{% url "series-list" %}">Series List</a></h2>
 
 {% if messages %}
@@ -11,14 +13,11 @@
 {% endif %}
 <p><a href="{% url "series-create" %}">Add Series</a></p>
 
-<form method="get" action="/search">
-    <input type="text" name="q" id="id_q">
-    <input type="submit" value="Search">
-</form>
-
+{% include "search_form.html" %}
 
 <ul>
   {% for book in object_list %}
     <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a> (<a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a>)</li>
   {% endfor %}
 </ul>
+{% endblock %}

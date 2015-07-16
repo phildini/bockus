@@ -1,5 +1,7 @@
-<h1>{{ series }}</h1>
+{% extends "base.html" %}
 
+{% block heading %}{{ block.super }} - {{ series }}{% endblock %}
+{% block content %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -21,3 +23,4 @@
 
 <p><a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a></p>
 <p><a href="{% url "series-list" %}">back to list</a></p>
+{% endblock %}
