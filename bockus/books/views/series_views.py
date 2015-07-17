@@ -19,6 +19,8 @@ from books.models import (
     Series,
 )
 
+from books.views import SEARCH_UPDATE_MESSAGE
+
 from readers.models import Reader
 
 
@@ -78,8 +80,12 @@ class EditSeriesView(UpdateView):
             kwargs={'pk': self.object.id},
         )
 
+        return context
+
     def form_valid(self, form):
-        messages.success(self.request, "{} updated".format(self.object))
+        messages.success(self.request, "{} updated. {}".format(
+            self.object, SEARCH_UPDATE_MESSAGE
+        ))
 
 
 class DeleteSeriesView(DeleteView):
@@ -91,7 +97,9 @@ class DeleteSeriesView(DeleteView):
         return reverse('series-list')
 
     def form_valid(self, form):
-        messages.success(self.request, "{} deleted".format(self.object))
+        messages.success(self.request, "{} deleted. {}".format(
+            self.object, SEARCH_UPDATE_MESSAGE
+        ))
 
         return super(DeleteSeriesView, self).form_valid(form)
 

@@ -26,6 +26,8 @@ from books.models import (
 
 from readers.models import Reader
 
+SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
+
 
 class BookListView(ListView):
 
@@ -80,9 +82,20 @@ class EditBookView(UpdateView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "{} updated".format(self.object))
+        response = super(EditBookView, self).form_valid(form)
+        if (
+            not form.cleaned_data.get('author') and
+            form.cleaned_data.get('series') and
+            form.cleaned_data.get('series').author
+        ):
+            self.object.author = form.cleaned_data.get('series').author
+            self.object.save()
 
-        return super(EditBookView, self).form_valid(form)
+        messages.success(self.request, "{} updated. {}".format(
+            self.object, SEARCH_UPDATE_MESSAGE
+        ))
+
+        return response
 
 
 class DeleteBookView(DeleteView):
@@ -94,7 +107,9 @@ class DeleteBookView(DeleteView):
         return reverse('book-list')
 
     def form_valid(self, form):
-        messages.success(self.request, "{} deleted".format(self.object))
+        messages.success(self.request, "{} deleted. {}".format(
+            self.object, SEARCH_UPDATE_MESSAGE
+        ))
 
         return super(DeleteBookView, self).form_valid(form)
 

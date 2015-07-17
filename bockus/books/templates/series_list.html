@@ -9,9 +9,8 @@
     {% endfor %}
 </ul>
 {% endif %}
-
+<p><a href="{% url "series-create" %}">Add Series</a></p>
 {% include "search_form.html" %}
-
 <ul>
   {% for series in object_list %}
     <li class="series"><a href="{{ series.get_absolute_url }}">{{ series }}</a> (<a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a>)</li>
