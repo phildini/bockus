@@ -26,22 +26,45 @@ from books.models import (
 
 from readers.models import Reader
 
+from troves.models import TroveLibrarian
+
 SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 
 
-class BookListView(ListView):
+class TroveMixin(object):
+
+    def get_queryset(self):
+        queryset = super(TroveMixin, self).get_queryset()
+        queryset = queryset.filter(
+            trove__trovelibrarian__user=self.request.user
+        )
+        return queryset
+
+    def form_valid(self, form):
+        response = super(TroveMixin, self).form_valid(form)
+
+        self.object.trove = TroveLibrarian.objects.get(
+            user=self.request.user
+        ).trove
+        self.object.save()
+
+        return response
+
+
+class BookListView(TroveMixin, ListView):
 
     model = Book
     template_name = "book_list.html"
 
     def get_queryset(self):
-        return Book.objects.all().order_by(
+        queryset = super(BookListView, self).get_queryset()
+        return queryset.order_by(
             'author',
             'series',
             'number_in_series',
         )
 
-class BookView(DetailView):
+class BookView(TroveMixin, DetailView):
 
     model = Book
     template_name = "book.html"
@@ -53,7 +76,7 @@ class BookView(DetailView):
         return context
 
 
-class CreateBookView(CreateView):
+class CreateBookView(TroveMixin, CreateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
@@ -63,7 +86,7 @@ class CreateBookView(CreateView):
         return reverse('book-list')
 
 
-class EditBookView(UpdateView):
+class EditBookView(TroveMixin, UpdateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
@@ -98,7 +121,7 @@ class EditBookView(UpdateView):
         return response
 
 
-class DeleteBookView(DeleteView):
+class DeleteBookView(TroveMixin, DeleteView):
 
     model = Book
     template_name = "book_delete.html"
@@ -117,7 +140,11 @@ class DeleteBookView(DeleteView):
 class SendBookView(View):
 
     def get(self, request, *args, **kwargs):
-        book = get_object_or_404(Book.objects, pk=kwargs.get('pk'))
+        book = get_object_or_404(
+            Book.objects,
+            pk=kwargs.get('pk'),
+            trove=TroveLibrarian.objects.get(user=self.request.user),
+        )
         reader = get_object_or_404(Reader.objects, pk=kwargs.get('reader'))
         book_file_version = BookFileVersion.objects.filter(
             book=book,

@@ -19,18 +19,21 @@ from books.models import (
     Series,
 )
 
-from books.views import SEARCH_UPDATE_MESSAGE
+from books.views import (
+    SEARCH_UPDATE_MESSAGE,
+    TroveMixin,
+)
 
 from readers.models import Reader
 
 
-class SeriesListView(ListView):
+class SeriesListView(TroveMixin, ListView):
 
     model = Series
     template_name = "series_list.html"
 
 
-class SeriesView(DetailView):
+class SeriesView(TroveMixin, DetailView):
 
     model = Series
     template_name = "series.html"
@@ -45,7 +48,7 @@ class SeriesView(DetailView):
         context['readers'] = Reader.objects.filter(user=self.request.user)
         return context
 
-class CreateSeriesView(CreateView):
+class CreateSeriesView(TroveMixin, CreateView):
 
     model = Series
     template_name = "add_or_edit_series.html"
@@ -61,7 +64,7 @@ class CreateSeriesView(CreateView):
         return context
 
 
-class EditSeriesView(UpdateView):
+class EditSeriesView(TroveMixin, UpdateView):
 
     model = Series
     template_name = "add_or_edit_series.html"
@@ -87,8 +90,10 @@ class EditSeriesView(UpdateView):
             self.object, SEARCH_UPDATE_MESSAGE
         ))
 
+        return super(EditSeriesView, self).form_valid(form)
 
-class DeleteSeriesView(DeleteView):
+
+class DeleteSeriesView(TroveMixin, DeleteView):
 
     model = Series
     template_name = "series_delete.html"

@@ -11,7 +11,8 @@ class Book(TimeStampedModel):
     author = models.CharField(max_length=255, null=True, blank=True)
     series = models.ForeignKey('Series', null=True, blank=True)
     number_in_series = models.IntegerField(null=True, blank=True)
-    meta = JSONField()
+    trove = models.ForeignKey(Trove, null=True)
+    meta = JSONField(blank=True)
 
     def __str__(self):
         string = self.title
@@ -69,6 +70,8 @@ class Series(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
+    trove = models.ForeignKey(Trove, null=True)
+    meta = JSONField(blank=True)
 
     def __str__(self):
         return "{} by {}".format(self.name, self.author)
