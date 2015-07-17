@@ -30,13 +30,7 @@ class Command(BaseCommand):
         access_token, user_id = flow.finish(code)
         self.client = dropbox.client.DropboxClient(access_token)
         print('linked account: ', self.client.account_info())
-        folder_metadata = self.client.metadata('/eBooks/sortme/McCaffrey, Anne')
-        folders = [
-            folder['path'] for folder in folder_metadata['contents'] if folder['is_dir'] == True
-        ]
-        print(folders)
-        for item in folders:
-            self.parse_folder(item)
+        self.parse_folder('/eBooks/sortme/McCaffrey, Anne')
 
         with open('titles.json', 'w') as outfile:
             json.dump(self.books, outfile, indent=4)
@@ -44,39 +38,46 @@ class Command(BaseCommand):
     def parse_folder(self, path):
         print("working on {}".format(path))
         metadata = self.client.metadata(path)
-        for item in metadata.get('contents'):
-            if not item.get('is_dir'):
-                if item.get('mime_type') in self.mimetypes:
-                    filename = item.get('path').split('/')[-1]
-                    name, extension = os.path.splitext(filename)
-                    self.books.append(name)
-                    self.books.append(extension)
-                    try:
-                        bookfile = BookFileVersion.objects.get(
-                            path=item.get('path'),
-                            filetype=extension[1:],
-                        )
-                    except BookFileVersion.DoesNotExist:
-                        try:
-                            bookfile = BookFileVersion.objects.get(
-                                path=item.get('path'),
-                            )
-                            new_bookfile = BookFileVersion.objects.create(
-                                path=item.get('path'),
-                                filetype=extension[1:],
-                                book=bookfile.book,
-                                storage_provider='dropbox',
-                            )
-                        except BookFileVersion.DoesNotExist:
-                            book = Book.objects.create(
-                                title=name,
-                            )
-                            bookfile = BookFileVersion.objects.create(
-                                path=item.get('path'),
-                                filetype=extension[1:],
-                                book=book,
-                                storage_provider='dropbox',
-                            )
-            else:
-                self.parse_folder(item.get('path'))
+        if not metadata.get('is_dir'):
+            self.parse_item(metadata)
+        else: 
+            for item in metadata.get('contents'):
+                if not item.get('is_dir'):
+                    self.parse_item(item)
+                else:
+                    self.parse_folder(item.get('path'))
+
+    def parse_item(self, item):
+        if item.get('mime_type') in self.mimetypes:
+            filename = item.get('path').split('/')[-1]
+            name, extension = os.path.splitext(filename)
+            self.books.append(name)
+            self.books.append(extension)
+            try:
+                bookfile = BookFileVersion.objects.get(
+                    path=item.get('path'),
+                    filetype=extension[1:],
+                )
+            except BookFileVersion.DoesNotExist:
+                try:
+                    bookfile = BookFileVersion.objects.get(
+                        path=item.get('path'),
+                    )
+                    new_bookfile = BookFileVersion.objects.create(
+                        path=item.get('path'),
+                        filetype=extension[1:],
+                        book=bookfile.book,
+                        storage_provider='dropbox',
+                    )
+                except BookFileVersion.DoesNotExist:
+                    book = Book.objects.create(
+                        title=name,
+                    )
+                    bookfile = BookFileVersion.objects.create(
+                        path=item.get('path'),
+                        filetype=extension[1:],
+                        book=book,
+                        storage_provider='dropbox',
+                    )
+
 
