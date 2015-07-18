@@ -1,5 +1,4 @@
 Django==1.8.2
-Unipath==1.1
 Whoosh==2.7.0
 django-allauth==0.21.0
 django-haystack==2.4.0

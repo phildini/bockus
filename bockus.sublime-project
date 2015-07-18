@@ -1,0 +1,14 @@
+{
+	"folders":
+	[
+		{
+			"path": "~/Repos/bockus"
+		},
+        {
+            "path": "~/Repos/django-allauth"
+        },
+        {
+            "path": "~/Repos/django"
+        }
+	]
+}
