@@ -16,13 +16,13 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 import books.urls
-from books.views import BookListView
+from books.views import BookListView, LibrarySearchView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
-    url(r'^search/', include('haystack.urls')),
+    url(r'^search/', LibrarySearchView.as_view(), name='search'),
     url(r'^$', BookListView.as_view()),
 ]

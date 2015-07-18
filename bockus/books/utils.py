@@ -13,7 +13,6 @@ MIMETYPES = (
 
 
 def parse_folder(client, path, library):
-    print("working on {}".format(path))
     metadata = client.metadata(path)
     if not metadata.get('is_dir'):
         parse_item(metadata)
