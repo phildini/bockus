@@ -20,14 +20,19 @@ bookpatterns = patterns('',
     #     name='book-new',
     # ),
     url(
-        r'^edit/(?P<pk>\d+)/$',
+        r'^(?P<pk>\d+)/edit/$',
         books.views.EditBookView.as_view(),
         name='book-edit',
     ),
     url(
-        r'^delete/(?P<pk>\d+)/$',
+        r'^(?P<pk>\d+)/delete/$',
         books.views.DeleteBookView.as_view(),
         name='book-delete',
+    ),
+    url(
+        r'^import/$',
+        books.views.ImportBooksView.as_view(),
+        name='books-import',
     ),
 )
 

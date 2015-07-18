@@ -24,9 +24,11 @@ from books.models import (
     BookFileVersion,
 )
 
+from books.utils import parse_folder
+
 from readers.models import Reader
 
-from libraries.models import Librarian
+from libraries.models import Library, Librarian
 
 SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 
@@ -177,3 +179,35 @@ class SendBookView(View):
         message.send()
         messages.add_message(request, messages.SUCCESS, 'Book emailed!')
         return redirect(book)
+
+
+class ImportBooksView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            token = SocialToken.objects.get(
+                account__user=request.user,
+                app__provider='dropbox_oauth2',
+            ).token
+        except:
+            raise Http404()
+        client = dropbox.client.DropboxClient(token)
+
+        try:
+            library = Library.objects.get(librarian__user=request.user)
+        except Library.DoesNotExist:
+            library = Library.objects.create(
+                title="{}'s Library".format(request.user),
+            )
+            Librarian.objects.create(
+                user=request.user,
+                library=library,
+            )
+
+        parse_folder(
+            client=client,
+            path='/eBooks/sortme/McCaffrey, Anne',
+            library=library,
+        )
+
+        return redirect('book-list')
