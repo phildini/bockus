@@ -26,32 +26,32 @@ from books.models import (
 
 from readers.models import Reader
 
-from troves.models import TroveLibrarian
+from libraries.models import Librarian
 
 SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 
 
-class TroveMixin(object):
+class LibraryMixin(object):
 
     def get_queryset(self):
-        queryset = super(TroveMixin, self).get_queryset()
+        queryset = super(LibraryMixin, self).get_queryset()
         queryset = queryset.filter(
-            trove__trovelibrarian__user=self.request.user
+            library__librarian__user=self.request.user
         )
         return queryset
 
     def form_valid(self, form):
-        response = super(TroveMixin, self).form_valid(form)
+        response = super(LibraryMixin, self).form_valid(form)
 
-        self.object.trove = TroveLibrarian.objects.get(
+        self.object.library = Librarian.objects.get(
             user=self.request.user
-        ).trove
+        ).library
         self.object.save()
 
         return response
 
 
-class BookListView(TroveMixin, ListView):
+class BookListView(LibraryMixin, ListView):
 
     model = Book
     template_name = "book_list.html"
@@ -64,7 +64,7 @@ class BookListView(TroveMixin, ListView):
             'number_in_series',
         )
 
-class BookView(TroveMixin, DetailView):
+class BookView(LibraryMixin, DetailView):
 
     model = Book
     template_name = "book.html"
@@ -76,7 +76,7 @@ class BookView(TroveMixin, DetailView):
         return context
 
 
-class CreateBookView(TroveMixin, CreateView):
+class CreateBookView(LibraryMixin, CreateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
@@ -86,7 +86,7 @@ class CreateBookView(TroveMixin, CreateView):
         return reverse('book-list')
 
 
-class EditBookView(TroveMixin, UpdateView):
+class EditBookView(LibraryMixin, UpdateView):
 
     model = Book
     template_name = "add_or_edit_book.html"
@@ -121,7 +121,7 @@ class EditBookView(TroveMixin, UpdateView):
         return response
 
 
-class DeleteBookView(TroveMixin, DeleteView):
+class DeleteBookView(LibraryMixin, DeleteView):
 
     model = Book
     template_name = "book_delete.html"
@@ -143,7 +143,7 @@ class SendBookView(View):
         book = get_object_or_404(
             Book.objects,
             pk=kwargs.get('pk'),
-            trove=TroveLibrarian.objects.get(user=self.request.user),
+            library=Librarian.objects.get(user=self.request.user).library,
         )
         reader = get_object_or_404(Reader.objects, pk=kwargs.get('reader'))
         book_file_version = BookFileVersion.objects.filter(

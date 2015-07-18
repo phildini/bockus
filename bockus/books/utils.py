@@ -3,7 +3,7 @@ import json
 import os
 
 from books.models import Book, BookFileVersion
-from troves.models import Trove, TroveLibrarian
+from libraries.models import Library, Librarian
 
 MIMETYPES = (
     "application/pdf",

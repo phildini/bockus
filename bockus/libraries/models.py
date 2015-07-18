@@ -4,7 +4,7 @@ from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 
 
-class Trove(TimeStampedModel):
+class Library(TimeStampedModel):
 
     title = models.CharField(max_length=255)
     allowed_users = models.IntegerField(default=5)
@@ -14,14 +14,14 @@ class Trove(TimeStampedModel):
         return self.title
 
 
-class TroveLibrarian(TimeStampedModel):
+class Librarian(TimeStampedModel):
 
     user = models.ForeignKey(User)
-    trove = models.ForeignKey('Trove')
+    library = models.ForeignKey('Library')
 
     def __str__(self):
         return "{} is a librarian of {}".format(
             self.user,
-            self.trove,
+            self.library,
         )
 

@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.dropbox_oauth2',
     'haystack',
     'books',
-    'troves',
+    'libraries',
     'readers',
 )
 
