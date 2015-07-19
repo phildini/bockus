@@ -3,7 +3,6 @@ import dropbox
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.http import Http404
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -161,7 +160,13 @@ class SendBookView(View):
                 app__provider='dropbox_oauth2'
             ).token
         except:
-            raise Http404()
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Couldn't make connection to Dropbox",
+            )
+            return redirect(book)
+
         client = dropbox.client.DropboxClient(token)
 
         message = EmailMessage(
