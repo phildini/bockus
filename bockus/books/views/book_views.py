@@ -1,5 +1,6 @@
 import dropbox
 
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -34,12 +35,28 @@ SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 
 class LibraryMixin(object):
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(
+                '{}?next={}'.format(settings.LOGIN_URL, request.path)
+            )
+
+        return super(LibraryMixin, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset = super(LibraryMixin, self).get_queryset()
         queryset = queryset.filter(
             library__librarian__user=self.request.user
         )
         return queryset
+
+    def get_object(self, queryset=None):
+        instance = super(LibraryMixin, self).get_object(queryset)
+
+        if not instance.library.librarian_set.filter(user=self.request.user):
+            raise PermissionDenied
+
+        return instance
 
     def form_valid(self, form):
         response = super(LibraryMixin, self).form_valid(form)
