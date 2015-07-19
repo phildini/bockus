@@ -1,15 +1,17 @@
 <html>
     <head>
-        <title>Bockus</title>
+        <title>Booksonas</title>
     </head>
     <body>
         <h1>
         {% block heading %}
-        <a href="/">Bockus</a>
+        <a href="/">Booksonas</a>
         {% endblock %}
         </h1>
         {% block content %}
         {% endblock %}
+        {% if user.is_authenticated %}
         <p><a href="{% url "books-import" %}">Import Books</a></p>
+        {% endif %}
     </body>
 </html>

@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from bockus.views import HomeView
 import books.urls
-from books.views import BookListView, LibrarySearchView
+from books.views import LibrarySearchView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -24,5 +25,5 @@ urlpatterns = [
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
     url(r'^search/', LibrarySearchView.as_view(), name='search'),
-    url(r'^$', BookListView.as_view()),
+    url(r'^$', HomeView.as_view(), name='home-view'),
 ]
