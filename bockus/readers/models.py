@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 from model_utils.models import TimeStampedModel
 
@@ -19,3 +20,6 @@ class Reader(TimeStampedModel):
 
     def __str__(self):
         return "{}'s {}".format(self.user, self.kind)
+
+    def get_absolute_url(self):
+        return reverse("reader-detail", kwargs={'pk': self.id})

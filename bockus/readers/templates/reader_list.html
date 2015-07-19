@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - Reader{% endblock %}
+{% block content %}
+<p><a href="{% url "reader-create" %}">Add Reader</a></p>
+{% include "search_form.html" %}
+<ul>
+  {% for reader in object_list %}
+    <li class="reader"><a href="{{ reader.get_absolute_url }}">{{ reader }}</a> (<a href="{% url "reader-edit" pk=reader.id %}">Edit</a> | <a href="{% url "reader-delete" pk=reader.id %}">Delete</a>)</li>
+  {% endfor %}
+</ul>
+{% endblock %}

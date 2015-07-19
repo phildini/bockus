@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - Delete Reader{% endblock %}
+{% block content %}
+
+<p>Are you sure you want to delete the reader "{{ reader }}"?</p>
+
+<form action="{% url "reader-delete" pk=reader.id %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url "reader-list" %}">No, cancel.</a>
+</form>
+{% endblock %}

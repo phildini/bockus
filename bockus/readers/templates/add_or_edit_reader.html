@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - Edit Reader{% endblock %}
+{% block content %}
+
+<form action="{{ action }}" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ form.as_ul }}
+  </ul>
+  <input id="save_reader" type="submit" value="Save" />
+</form>
+
+<a href="{% url "reader-list" %}">back to list</a>
+{% endblock %}

@@ -5,7 +5,7 @@
 
 <p>Are you sure you want to delete the series "{{ series }}"?</p>
 
-<form action="{% url "series-delete" pk=book.id %}" method="POST">
+<form action="{% url "series-delete" pk=series.id %}" method="POST">
   {% csrf_token %}
 
   <input type="submit" value="Yes, delete." />

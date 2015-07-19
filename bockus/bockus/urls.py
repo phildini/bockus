@@ -18,12 +18,14 @@ from django.contrib import admin
 from bockus.views import HomeView
 import books.urls
 from books.views import LibrarySearchView
+import readers.urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
+    url(r'^readers/', include(readers.urls.readerpatterns)),
     url(r'^search/', LibrarySearchView.as_view(), name='search'),
     url(r'^$', HomeView.as_view(), name='home-view'),
 ]
