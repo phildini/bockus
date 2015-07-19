@@ -135,6 +135,8 @@ DEFAULT_FROM_EMAIL = 'site@inkpebble.com'
 SERVER_EMAIL = 'site@inkpebble.com'
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
 
 
 # Internationalization
