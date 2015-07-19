@@ -190,7 +190,12 @@ class ImportBooksView(View):
                 app__provider='dropbox_oauth2',
             ).token
         except:
-            raise Http404()
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'You need to connect to Dropbox before importing.',
+            )
+            return redirect(reverse('socialaccount_connections'))
         client = dropbox.client.DropboxClient(token)
 
         try:

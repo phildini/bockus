@@ -3,14 +3,6 @@
 {% block heading %}{{ block.super }} - Books{% endblock %}
 {% block content %}
 <h2><a href="{% url "series-list" %}">Series List</a></h2>
-
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
 <p><a href="{% url "series-create" %}">Add Series</a></p>
 
 {% include "search_form.html" %}
