@@ -235,6 +235,7 @@ class ImportBooksView(View):
             client=client,
             path='/eBooks/sortme/McCaffrey, Anne',
             library=library,
+            user=request.user,
         )
 
         return redirect('book-list')

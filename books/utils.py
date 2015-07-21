@@ -12,19 +12,19 @@ MIMETYPES = (
 )
 
 
-def parse_folder(client, path, library):
+def parse_folder(client, path, library, user):
     metadata = client.metadata(path)
     if not metadata.get('is_dir'):
-        parse_item(metadata)
+        parse_item(metadata, library, user)
     else: 
         for item in metadata.get('contents'):
             if not item.get('is_dir'):
-                parse_item(item, library)
+                parse_item(item, library, user)
             else:
-                parse_folder(client, item.get('path'), library)
+                parse_folder(client, item.get('path'), library, user)
 
 
-def parse_item(item, library):
+def parse_item(item, library, user):
     if item.get('mime_type') in MIMETYPES:
         filename = item.get('path').split('/')[-1]
         name, extension = os.path.splitext(filename)
@@ -55,6 +55,7 @@ def parse_item(item, library):
                 book = Book.objects.create(
                     title=name,
                     library=library,
+                    added_by=user,
                 )
                 bookfile = BookFileVersion.objects.create(
                     path=item.get('path'),

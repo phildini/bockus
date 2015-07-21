@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.timezone import now
@@ -5,13 +6,15 @@ from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from libraries.models import Library
 
+
 class Book(TimeStampedModel):
 
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
     series = models.ForeignKey('Series', null=True, blank=True)
     number_in_series = models.IntegerField(null=True, blank=True)
-    library = models.ForeignKey(Library, null=True)
+    library = models.ForeignKey(Library)
+    added_by = models.ForeignKey(User)
     meta = JSONField(blank=True)
 
     def __str__(self):
@@ -70,7 +73,7 @@ class Series(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
-    library = models.ForeignKey(Library, null=True)
+    library = models.ForeignKey(Library)
     meta = JSONField(blank=True)
 
     def __str__(self):
