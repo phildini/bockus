@@ -80,6 +80,7 @@ class BookListView(LibraryMixin, ListView):
     model = Book
     template_name = "book_list.html"
     paginate_by = 25
+    paginate_orphans = 5
 
     def get_queryset(self):
         queryset = super(BookListView, self).get_queryset()
@@ -96,8 +97,22 @@ class BookView(LibraryMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(BookView, self).get_context_data(**kwargs)
-        context['readers'] = Reader.objects.filter(user=self.request.user)
-
+        context['can_send_to_kindle'] = BookFileVersion.objects.filter(
+            book=self.object,
+            filetype__in=(BookFileVersion.MOBI, BookFileVersion.PDF),
+        )
+        context['can_send_to_other'] = BookFileVersion.objects.filter(
+            book=self.object,
+            filetype__in=(BookFileVersion.EPUB, BookFileVersion.PDF),
+        )
+        context['kindles'] = Reader.objects.filter(
+            user=self.request.user,
+            kind=Reader.KINDLE,
+        )
+        context['other_readers'] = Reader.objects.filter(
+            user=self.request.user,
+            kind=Reader.IBOOKS,
+        )
         return context
 
 
@@ -171,42 +186,51 @@ class SendBookView(View):
             library=Librarian.objects.get(user=self.request.user).library,
         )
         reader = get_object_or_404(Reader.objects, pk=kwargs.get('reader'))
-        book_file_version = BookFileVersion.objects.filter(
-            book=book,
-        )[0]
-        book_file_path = book_file_version.path
-        try:
-            dropbox_app_creds = SocialApp.objects.filter(
-                provider='dropbox_oauth2'
-            )[0]
-            token = SocialToken.objects.get(
-                account__user=request.user,
-                app__provider='dropbox_oauth2'
-            ).token
-        except:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Couldn't make connection to Dropbox",
+        if reader.kind == Reader.KINDLE:
+            book_file_version = book.get_version_for_kindle()
+        else:
+            book_file_version = book.get_version_for_other()
+        if book_file_version:
+            book_file_path = book_file_version.path
+            try:
+                dropbox_app_creds = SocialApp.objects.filter(
+                    provider='dropbox_oauth2'
+                )[0]
+                token = SocialToken.objects.get(
+                    account__user=book.added_by,
+                    app__provider='dropbox_oauth2'
+                ).token
+            except:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    "Couldn't make connection to Dropbox",
+                )
+                return redirect(book)
+
+            client = dropbox.client.DropboxClient(token)
+
+            message = EmailMessage(
+                subject='A book for you!',
+                body=book.title,
+                from_email="books@booksonas.com",
+                to=[reader.email,],
             )
+            f, metadata = client.get_file_and_metadata(book_file_path)
+            message.attach(
+                'book.{}'.format(book_file_version.filetype),
+                f.read(),
+                metadata.get('mime_type'),
+            )
+            message.send()
+            messages.add_message(request, messages.SUCCESS, 'Book emailed!')
             return redirect(book)
 
-        client = dropbox.client.DropboxClient(token)
-
-        message = EmailMessage(
-            subject='A book for you!',
-            body=book.title,
-            from_email="books@inkpebble.com",
-            to=[reader.email,],
+        messages.add_message(
+            request,
+            messages.INFO,
+            'Something went wrong. Try sending again',
         )
-        f, metadata = client.get_file_and_metadata(book_file_path)
-        message.attach(
-            'book.{}'.format(book_file_version.filetype),
-            f.read(),
-            metadata.get('mime_type'),
-        )
-        message.send()
-        messages.add_message(request, messages.SUCCESS, 'Book emailed!')
         return redirect(book)
 
 

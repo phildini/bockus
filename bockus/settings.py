@@ -131,8 +131,8 @@ EMAIL_HOST = 'smtp.mandrillapp.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'pjj@philipjohnjames.com'
 EMAIL_HOST_PASSWORD = get_env_variable('MANDRILL_KEY')
-DEFAULT_FROM_EMAIL = 'site@inkpebble.com'
-SERVER_EMAIL = 'site@inkpebble.com'
+DEFAULT_FROM_EMAIL = 'site@booksonas.com'
+SERVER_EMAIL = 'site@booksonas.com'
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'

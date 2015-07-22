@@ -39,6 +39,38 @@ class Book(TimeStampedModel):
     def is_book(self):
         return True
 
+    def get_version_for_kindle(self):
+        try:
+            return BookFileVersion.objects.filter(
+                book=self,
+                filetype=BookFileVersion.MOBI,
+            )
+        except BookFileVersion.DoesNotExist:
+            try:
+                return BookFileVersion.objects.filter(
+                    book=self,
+                    filetype=BookFileVersion.PDF,
+                )
+            except BookFileVersion.DoesNotExist:
+                return None
+        return None
+
+    def get_version_for_other(self):
+        try:
+            return BookFileVersion.objects.filter(
+                book=self,
+                filetype=BookFileVersion.EPUB,
+            )
+        except BookFileVersion.DoesNotExist:
+            try:
+                return BookFileVersion.objects.filter(
+                    book=self,
+                    filetype=BookFileVersion.PDF,
+                )
+            except BookFileVersion.DoesNotExist:
+                return None
+        return None
+
 
 class BookFileVersion(TimeStampedModel):
     DROPBOX = 'dropbox'
