@@ -12,6 +12,7 @@ from django.views.generic import (
     CreateView,
     DeleteView,
     DetailView,
+    FormView,
     ListView,
     UpdateView,
     View,
@@ -19,12 +20,17 @@ from django.views.generic import (
 
 from allauth.socialaccount.models import SocialApp, SocialToken
 
+from books.forms import ImportForm
+
 from books.models import (
     Book,
     BookFileVersion,
 )
 
-from books.utils import parse_folder
+from books.utils import (
+    parse_folder,
+    parse_multiple_folders,
+)
 
 from readers.models import Reader
 
@@ -203,11 +209,15 @@ class SendBookView(View):
         return redirect(book)
 
 
-class ImportBooksView(View):
+class ImportBooksView(FormView):
 
-    def get(self, request, *args, **kwargs):
+    form_class = ImportForm
+    template_name = "import.html"
+
+    def dispatch(self, request, *args, **kwargs):
+
         try:
-            token = SocialToken.objects.get(
+            self.token = SocialToken.objects.get(
                 account__user=request.user,
                 app__provider='dropbox_oauth2',
             ).token
@@ -218,24 +228,51 @@ class ImportBooksView(View):
                 'You need to connect to Dropbox before importing.',
             )
             return redirect(reverse('socialaccount_connections'))
-        client = dropbox.client.DropboxClient(token)
+        self.client = dropbox.client.DropboxClient(self.token)
 
+        return super(ImportBooksView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('book-list')
+
+    def get_context_data(self, **kwargs):
+        context = super(ImportBooksView, self).get_context_data(**kwargs)
+        context['action'] = reverse('books-import')
+
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(ImportBooksView, self).get_form_kwargs()
+        kwargs['token'] = self.token
+        kwargs['client'] = self.client
+        return kwargs
+
+    def form_valid(self, form):
         try:
-            library = Library.objects.get(librarian__user=request.user)
+            library = Library.objects.get(
+                librarian__user=self.request.user,
+            )
         except Library.DoesNotExist:
             library = Library.objects.create(
                 title="{}'s Library".format(request.user),
             )
             Librarian.objects.create(
-                user=request.user,
+                user=self.request.user,
                 library=library,
             )
 
-        parse_folder(
-            client=client,
-            path='/eBooks/sortme/McCaffrey, Anne',
-            library=library,
-            user=request.user,
-        )
-
-        return redirect('book-list')
+        if 'select_all_option' in form.cleaned_data.get('folders'):
+            parse_folder(
+                client=self.client,
+                path='/',
+                library=library,
+                user=self.request.user,
+            )
+        else:
+            parse_multiple_folders(
+                client=self.client,
+                folders=form.cleaned_data.get('folders'),
+                library=library,
+                user=self.request.user,
+            )
+        return super(ImportBooksView, self).form_valid(form)

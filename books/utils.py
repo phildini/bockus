@@ -11,6 +11,10 @@ MIMETYPES = (
     "application/epub+zip",
 )
 
+def parse_multiple_folders(client, folders, library, user):
+    for folder in folders:
+        parse_folder(client, folder, library, user)
+
 
 def parse_folder(client, path, library, user):
     metadata = client.metadata(path)
