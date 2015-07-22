@@ -11,6 +11,13 @@
     <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a> (<a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a>)</li>
   {% endfor %}
 </ul>
+{% if page_obj.has_previous or page_obj.has_next %}
+    <div>
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">{% endif %}&laquo; Previous{% if page_obj.has_previous %}</a>{% endif %}
+        |
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">{% endif %}Next &raquo;{% if page_obj.has_next %}</a>{% endif %}
+    </div>
+{% endif %}
 {% else %}
 <p>No books in library!</p>
 {% endif %}

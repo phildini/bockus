@@ -79,6 +79,7 @@ class BookListView(LibraryMixin, ListView):
 
     model = Book
     template_name = "book_list.html"
+    paginate_by = 25
 
     def get_queryset(self):
         queryset = super(BookListView, self).get_queryset()

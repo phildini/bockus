@@ -36,6 +36,7 @@ class SeriesView(LibraryMixin, DetailView):
 
     model = Series
     template_name = "series.html"
+    paginate_by = 25
 
     def get_context_data(self, **kwargs):
         context = super(SeriesView, self).get_context_data(**kwargs)
