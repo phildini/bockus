@@ -13,6 +13,9 @@ class BookIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
 
+    def get_updated_field(self):
+        return 'modified'
+
 
 class SeriesIndex(indexes.SearchIndex, indexes.Indexable):
 
@@ -24,3 +27,6 @@ class SeriesIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
+
+    def get_updated_field(self):
+        return 'modified'
