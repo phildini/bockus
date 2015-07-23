@@ -1,11 +1,16 @@
 Django==1.8.2
 Whoosh==2.7.0
+dj-database-url==0.3.0
+dj-static==0.0.6
 django-allauth==0.21.0
 django-haystack==2.4.0
 django-model-utils==2.2
+django-toolbelt==0.0.1
 dropbox==2.2.0
+gunicorn==19.3.0
 jsonfield==1.0.3
 oauthlib==0.7.2
+psycopg2==2.6.1
 python3-openid==3.0.5
 requests==2.7.0
 requests-oauthlib==0.5.0

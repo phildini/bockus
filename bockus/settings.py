@@ -30,9 +30,6 @@ def get_env_variable(var_name):
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i@5+5il)6do6jy#0x*^r0jl3bic%3e^qmgje#(g-^@$8de9m4z'
 
-DROPBOX_APP_KEY = get_env_variable('DROPBOX_APP_KEY')
-DROPBOX_APP_SECRET = get_env_variable('DROPBOX_APP_SECRET')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
