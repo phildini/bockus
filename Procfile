@@ -1,0 +1,1 @@
+web: gunicorn bockus.heroku_wsgi
