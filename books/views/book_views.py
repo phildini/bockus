@@ -25,6 +25,7 @@ from books.forms import ImportForm
 from books.models import (
     Book,
     BookFileVersion,
+    Series,
 )
 
 from books.utils import (
@@ -65,12 +66,10 @@ class LibraryMixin(object):
         return instance
 
     def form_valid(self, form):
-        response = super(LibraryMixin, self).form_valid(form)
-
-        self.object.library = Librarian.objects.get(
+        form.instance.library = Librarian.objects.get(
             user=self.request.user
         ).library
-        self.object.save()
+        response = super(LibraryMixin, self).form_valid(form)
 
         return response
 
@@ -134,6 +133,13 @@ class EditBookView(LibraryMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('book-detail', args=[self.object.pk])
+
+    def get_form(self, form_class):
+        form = super(EditBookView, self).get_form(form_class)
+        form.fields['series'].queryset = Series.objects.filter(
+            library__librarian__user=self.request.user,
+        )
+        return form
 
     def get_context_data(self, **kwargs):
         context = super(EditBookView, self).get_context_data(**kwargs)
