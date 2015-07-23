@@ -94,7 +94,7 @@ class BookFileVersion(TimeStampedModel):
         choices=STORAGE_PROVIDERS,
         default=DROPBOX,
     )
-    path = models.CharField(max_length=255, null=True)
+    path = models.TextField(null=True)
     meta = JSONField()
 
     def __str__(self):
