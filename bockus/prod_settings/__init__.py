@@ -1,7 +1,7 @@
 from bockus.settings import *
 import dj_database_url
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 DATABASES['default'] = dj_database_url.config()

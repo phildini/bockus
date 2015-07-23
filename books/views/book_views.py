@@ -285,7 +285,7 @@ class ImportBooksView(FormView):
             )
         except Library.DoesNotExist:
             library = Library.objects.create(
-                title="{}'s Library".format(request.user),
+                title="{}'s Library".format(self.request.user),
             )
             Librarian.objects.create(
                 user=self.request.user,
