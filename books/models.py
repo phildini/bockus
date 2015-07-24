@@ -44,13 +44,13 @@ class Book(TimeStampedModel):
             return BookFileVersion.objects.filter(
                 book=self,
                 filetype=BookFileVersion.MOBI,
-            )
+            )[0]
         except BookFileVersion.DoesNotExist:
             try:
                 return BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.PDF,
-                )
+                )[0]
             except BookFileVersion.DoesNotExist:
                 return None
         return None
@@ -60,13 +60,13 @@ class Book(TimeStampedModel):
             return BookFileVersion.objects.filter(
                 book=self,
                 filetype=BookFileVersion.EPUB,
-            )
+            )[0]
         except BookFileVersion.DoesNotExist:
             try:
                 return BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.PDF,
-                )
+                )[0]
             except BookFileVersion.DoesNotExist:
                 return None
         return None
