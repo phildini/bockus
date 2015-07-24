@@ -2,7 +2,7 @@
 
 {% block heading %}{{ block.super }} - Edit Reader{% endblock %}
 {% block content %}
-
+<p>If you're adding a kindle, add books@booksonas.com to your approved Kindle Documents addresses.</p>
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
   <ul>

@@ -71,14 +71,19 @@ class CreateReaderView(UserOwnedObjectMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(CreateReaderView, self).form_valid(form)
+        response = super(CreateReaderView, self).form_valid(form)
+        self.object.name = "{}'s {}".format(
+            self.object.user, self.object.kind,
+        )
+        self.object.save()
+        return response
 
 
 class EditReaderView(UserOwnedObjectMixin, UpdateView):
 
     model = Reader
     template_name = "add_or_edit_reader.html"
-    fields = ['kind', 'email']
+    fields = ['name', 'kind', 'email']
 
     def get_success_url(self):
         return reverse(
