@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - {{ series }}{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "series-list" %}">Series</a> - {{ series }}{% endblock %}
 {% block content %}
 
 <ul>
@@ -15,5 +15,5 @@
 </ul>
 
 <p><a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a></p>
-<p><a href="{% url "series-list" %}">back to list</a></p>
+<p><a href="{% url "series-list" %}">Series List</a></p>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Delete Book{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - Delete Book{% endblock %}
 {% block content %}
 
 <p>Are you sure you want to delete the book "{{ book }}"?</p>

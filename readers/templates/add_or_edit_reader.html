@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Edit Reader{% endblock %}
+{% block heading %}
+{{ block.super }} - <a href="{% url "reader-list" %}">Readers</a> - 
+{% if reader %}
+Edit "{{ reader }}"
+{% else %}
+Add Reader
+{% endif %}
+{% endblock %}
+
 {% block content %}
-<p>If you're adding a kindle, add books@booksonas.com to your approved Kindle Documents addresses.</p>
+<p>Here's where you can add a reader to send books to.</p>
+<p>If you're adding a Send-to-Kindle address, you need to add "books@booksonas.com" to your Approved Personal Document E-Mail List. <a href="https://www.amazon.com/gp/help/customer/display.html/ref=kinw_myk_wl_ln?ie=UTF8&nodeId=200767340">Learn More.</a></p>
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
   <ul>
@@ -10,6 +19,5 @@
   </ul>
   <input id="save_reader" type="submit" value="Save" />
 </form>
-
-<a href="{% url "reader-list" %}">back to list</a>
+<a href="{% url "reader-list" %}">Reader List</a>
 {% endblock %}

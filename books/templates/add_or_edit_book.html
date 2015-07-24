@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Edit Book{% endblock %}
-{% block content %}
+{% block heading %}
+{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - 
+{% if book %}
+Edit "{{ book }}"
+{% else %}
+Add Book
+{% endif %}
+{% endblock %}
 
+{% block content %}
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
   <ul>
@@ -10,6 +17,4 @@
   </ul>
   <input id="save_book" type="submit" value="Save" />
 </form>
-
-<a href="{% url "book-list" %}">back to list</a>
 {% endblock %}

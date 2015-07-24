@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Delete Series{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "series-list" %}">Series</a> - Delete Series{% endblock %}
 {% block content %}
 
 <p>Are you sure you want to delete the series "{{ series }}"?</p>

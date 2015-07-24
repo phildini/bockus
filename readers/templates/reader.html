@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - {{ reader }}{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "reader-list" %}">Readers</a> - {{ reader }}{% endblock %}
 {% block content %}
 <p>Email: {{ reader.email }}</p>
 <p><a href="{% url "reader-edit" pk=reader.id %}">Edit</a> | <a href="{% url "reader-delete" pk=reader.id %}">Delete</a></p>
-<p><a href="{% url "reader-list" %}">back to list</a></p>
+<p><a href="{% url "reader-list" %}">Reader List</a></p>
 {% endblock %}

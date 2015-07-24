@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Import Books{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - Import Books{% endblock %}
 {% block content %}
 
 <p>Right now, Booksonas only imports all books from top-level directories</p>

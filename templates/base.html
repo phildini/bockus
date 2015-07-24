@@ -18,7 +18,7 @@
         {% block content %}
         {% endblock %}
         {% if user.is_authenticated %}
-        <p><a href="{% url "books-import" %}">Import Books</a></p>
+        <p><a href="{% url "book-list" %}">Book List</a> | <a href="{% url "books-import" %}">Import Books</a> | <a href="{% url "account_logout" %}">Sign Out</a> | <a href="mailto:pjj@philipjohnjames.com">Send Feedback</a></p>
         {% endif %}
     </body>
 </html>

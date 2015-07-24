@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - {{ book }}{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - {{ book }}{% endblock %}
 {% block content %}
 
 <p><a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a></p>
@@ -23,5 +23,4 @@
 {% else %}
 <p>Hmm... No eBook readers attached to this account. Why not <a href="{% url "reader-create" %}">add one</a>?</p>
 {% endif %}
-<p><a href="{% url "book-list" %}">back to list</a></p>
 {% endblock %}

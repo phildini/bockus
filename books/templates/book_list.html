@@ -3,8 +3,8 @@
 {% block heading %}{{ block.super }} - Books{% endblock %}
 {% block content %}
 {% if object_list %}
-<h2><a href="{% url "series-list" %}">Series List</a></h2>
-<p><a href="{% url "series-create" %}">Add Series</a></p>
+<h2><a href="{% url "series-list" %}">Series List</a> | <a href="{% url "reader-list" %}">Reader List</a></h2>
+<p><a href="{% url "series-create" %}">Add Series</a> | <a href="{% url "reader-create" %}">Add Reader</a></p>
 {% include "search_form.html" %}
 <ul>
   {% for book in object_list %}

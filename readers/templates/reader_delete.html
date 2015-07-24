@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Delete Reader{% endblock %}
+{% block heading %}{{ block.super }} - <a href="{% url "reader-list" %}">Readers</a> - Delete Reader{% endblock %}
 {% block content %}
 
 <p>Are you sure you want to delete the reader "{{ reader }}"?</p>

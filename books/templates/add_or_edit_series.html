@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - Edit Series{% endblock %}
-{% block content %}
+{% block heading %}
+{{ block.super }} - <a href="{% url "series-list" %}">Series</a> - 
+{% if series %}
+Edit "{{ series }}"
+{% else %}
+Add Series
+{% endif %}
+{% endblock %}
 
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
@@ -11,5 +17,5 @@
   <input id="save_series" type="submit" value="Save" />
 </form>
 
-<a href="{% url "series-list" %}">back to list</a>
+<a href="{% url "series-list" %}">Series List</a>
 {% endblock %}

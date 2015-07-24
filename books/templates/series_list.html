@@ -2,7 +2,7 @@
 
 {% block heading %}{{ block.super }} - Series{% endblock %}
 {% block content %}
-<p><a href="{% url "series-create" %}">Add Series</a></p>
+<p><a href="{% url "series-create" %}">Add Series</a> | <a href="{% url "reader-create" %}">Add Reader</a></p>
 {% include "search_form.html" %}
 <ul>
   {% for series in object_list %}
