@@ -8,6 +8,7 @@ from django.shortcuts import (
     get_object_or_404,
     redirect,
 )
+from django import forms
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -88,6 +89,65 @@ class BookListView(LibraryMixin, ListView):
             'series',
             'number_in_series',
         )
+
+    def get_success_url(self):
+        return reverse('book-list')
+
+    def get_form_kwargs(self):
+        """
+        Right now, using this only for POST, PUT
+        """
+        kwargs = {}
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
+
+    def get_form(self, form_class=None):
+        form = forms.Form(**self.get_form_kwargs())
+        queryset = self.get_queryset()
+        page_size = self.get_paginate_by(queryset)
+        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+        choices = [(book.id, book.title) for book in page]
+        actions = [
+            ('merge', 'Merge Selected'),
+            ('delete', 'Delete Selected'),
+        ]
+        form.fields['books'] = forms.MultipleChoiceField(
+            required=False,
+            choices=choices,
+            widget=forms.CheckboxSelectMultiple()
+        )
+        form.fields['actions'] = forms.ChoiceField(
+            required=False,
+            choices=actions,
+        )
+        return form
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        if form.cleaned_data.get('actions'):
+            if form.cleaned_data.get('actions') == 'merge':
+                pass
+
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(BookListView, self).get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        return context
+
 
 class BookView(LibraryMixin, DetailView):
 
