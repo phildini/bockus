@@ -36,6 +36,20 @@ class Book(TimeStampedModel):
     def get_absolute_url(self):
         return reverse('book-detail', kwargs={'pk': self.id})
 
+    def to_dict(self):
+        blob = {
+            'title': self.title,
+            'author': self.author,
+            'library': self.library.id,
+            'added_by': self.added_by.id,
+            'meta': self.meta,
+        }
+        if self.series:
+            blob['series'] = self.series.id
+        if self.number_in_series:
+            blob['number_in_series'] = self.number_in_series
+        return blob
+
     @property
     def is_book(self):
         return True

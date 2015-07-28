@@ -1,11 +1,14 @@
 import dropbox
+import json
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.http import Http404
 from django.shortcuts import (
+    get_list_or_404,
     get_object_or_404,
     redirect,
 )
@@ -16,6 +19,7 @@ from django.views.generic import (
     DetailView,
     FormView,
     ListView,
+    TemplateView,
     UpdateView,
     View,
 )
@@ -132,9 +136,13 @@ class BookListView(LibraryMixin, ListView):
 
     def form_valid(self, form):
         if form.cleaned_data.get('actions'):
-            if form.cleaned_data.get('actions') == 'merge':
-                pass
-
+            if (
+                form.cleaned_data.get('actions') == 'merge' and
+                form.cleaned_data.get('books')
+            ):
+                books = [int(book) for book in form.cleaned_data.get('books')]
+                self.request.session['books_to_merge'] = json.dumps(books)
+                return redirect(reverse('books-merge'))
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
@@ -238,6 +246,50 @@ class DeleteBookView(LibraryMixin, DeleteView):
         ))
 
         return super(DeleteBookView, self).form_valid(form)
+
+
+class MergeBookView(TemplateView):
+
+    template_name = "books_merge.html"
+
+    def post(self, request, *args, **kwargs):
+        books_to_merge = json.loads(self.request.session.get('books_to_merge'))
+        try:
+            books = Book.objects.filter(
+                pk__in=books_to_merge,
+                library__librarian__user=self.request.user,
+            ).order_by('-modified')
+        except:
+            raise Http404()
+        new_book = books[0]
+        meta_json = new_book.meta
+        if meta_json:
+            meta = json.loads(meta)
+            merged_books = meta.get('merged', [])
+        else:
+            meta = {}
+            merged_books = []
+        for book in books[1:]:
+            for version in BookFileVersion.objects.filter(book=book):
+                version.book = new_book
+                version.save()
+            merged_books.append(book.to_dict()),
+            book.delete()
+        meta['merged'] = merged_books
+        new_book.meta = json.dumps(meta)
+        new_book.save()
+        return redirect(reverse('book-list'))
+
+
+    def get_context_data(self, **kwargs):
+        context = super(MergeBookView, self).get_context_data(**kwargs)
+        books_to_merge = json.loads(self.request.session.get('books_to_merge'))
+        context['books'] = get_list_or_404(
+            Book.objects,
+            pk__in=books_to_merge,
+            library__librarian__user=self.request.user,
+        )
+        return context
 
 
 class SendBookView(View):

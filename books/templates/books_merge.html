@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - Merge Books{% endblock %}
+{% block content %}
+
+<p>Are you sure you want to merge the following books?</p>
+<ul>
+{% for book in books %}
+    <li>{{ book }}</li>
+{% endfor %}
+</ul>
+
+<form action="{% url "books-merge" %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, merge." />
+  <a href="{% url "book-list" %}">No, cancel.</a>
+</form>
+{% endblock %}

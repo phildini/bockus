@@ -34,6 +34,11 @@ bookpatterns = patterns('',
         books.views.ImportBooksView.as_view(),
         name='books-import',
     ),
+    url(
+        r'^merge/$',
+        books.views.MergeBookView.as_view(),
+        name='books-merge',
+    ),
 )
 
 seriespatterns = patterns('',
