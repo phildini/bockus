@@ -39,37 +39,52 @@ class Book(TimeStampedModel):
     def is_book(self):
         return True
 
-    def get_version_for_kindle(self):
-        try:
-            return BookFileVersion.objects.filter(
-                book=self,
-                filetype=BookFileVersion.MOBI,
-            )[0]
-        except BookFileVersion.DoesNotExist:
+    @property
+    def epub(self):
+        if not hasattr(self, '_epub') or not self._epub:
             try:
-                return BookFileVersion.objects.filter(
+                self._epub =  BookFileVersion.objects.filter(
+                    book=self,
+                    filetype=BookFileVersion.EPUB,
+                )[0]
+            except (BookFileVersion.DoesNotExist, IndexError):
+                self._epub = None
+        return self._epub
+
+    @property
+    def pdf(self):
+        if not hasattr(self, '_pdf') or not self._pdf:
+            try:
+                self._pdf =  BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.PDF,
                 )[0]
-            except BookFileVersion.DoesNotExist:
-                return None
-        return None
+            except (BookFileVersion.DoesNotExist, IndexError):
+                self._pdf = None
+        return self._pdf
+
+    @property
+    def mobi(self):
+        if not hasattr(self, '_mobi') or not self._mobi:
+            try:
+                self._mobi =  BookFileVersion.objects.filter(
+                    book=self,
+                    filetype=BookFileVersion.MOBI,
+                )[0]
+            except (BookFileVersion.DoesNotExist, IndexError):
+                self._mobi =  None
+        return self._mobi
+
+
+    def get_version_for_kindle(self):
+        if self.mobi:
+            return self.mobi
+        return self.pdf
 
     def get_version_for_other(self):
-        try:
-            return BookFileVersion.objects.filter(
-                book=self,
-                filetype=BookFileVersion.EPUB,
-            )[0]
-        except BookFileVersion.DoesNotExist:
-            try:
-                return BookFileVersion.objects.filter(
-                    book=self,
-                    filetype=BookFileVersion.PDF,
-                )[0]
-            except BookFileVersion.DoesNotExist:
-                return None
-        return None
+        if self.epub:
+            return self.epub
+        return self.pdf
 
 
 class BookFileVersion(TimeStampedModel):

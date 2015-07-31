@@ -3,9 +3,9 @@
 {% block heading %}{{ block.super }} - Books{% endblock %}
 {% block content %}
 {% if object_list %}
+{% include "search_form.html" %}
 <h2><a href="{% url "series-list" %}">Series List</a> | <a href="{% url "reader-list" %}">Reader List</a></h2>
 <p><a href="{% url "series-create" %}">Add Series</a> | <a href="{% url "reader-create" %}">Add Reader</a></p>
-{% include "search_form.html" %}
 <ul>
   {% for book in object_list %}
     <li class="book"><a href="{{ book.get_absolute_url }}">{{ book }}</a> (<a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a>)</li>

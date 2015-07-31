@@ -4,6 +4,14 @@
 {% block content %}
 
 <p><a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a></p>
+<p>
+    Available in:
+    <ul>
+        {% if book.mobi %}<li>mobi (Kindle-compatible)</li>{% endif %}
+        {% if book.epub %}<li>epub (iBooks, Kobo compatible)</li>{% endif %}
+        {% if book.pdf %}<li>pdf (Compatible with most readers)</li>{% endif %}
+    </ul>
+</p>
 {% if kindles %}
     {% if can_send_to_kindle %}
     {% for kindle in kindles %}
