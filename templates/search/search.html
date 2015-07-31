@@ -2,10 +2,7 @@
 
 {% block heading %}{{ block.super }} - Search{% endblock %}
 {% block content %}
-<form method="get" action="/search">
-    {{ form.as_p }}
-    <input type="submit" value="Search">
-</form>
+{% include "search_form.html" %}
 {% if query %}
     <h3>Results</h3>
     {% for result in page_obj.object_list %}
