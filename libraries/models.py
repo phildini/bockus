@@ -13,6 +13,9 @@ class Library(TimeStampedModel):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_plural_name = 'libraries'
+
 
 class Librarian(TimeStampedModel):
 

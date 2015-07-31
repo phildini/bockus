@@ -43,7 +43,7 @@ class Book(TimeStampedModel):
     def epub(self):
         if not hasattr(self, '_epub') or not self._epub:
             try:
-                self._epub =  BookFileVersion.objects.filter(
+                self._epub = BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.EPUB,
                 )[0]
@@ -55,7 +55,7 @@ class Book(TimeStampedModel):
     def pdf(self):
         if not hasattr(self, '_pdf') or not self._pdf:
             try:
-                self._pdf =  BookFileVersion.objects.filter(
+                self._pdf = BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.PDF,
                 )[0]
@@ -67,7 +67,7 @@ class Book(TimeStampedModel):
     def mobi(self):
         if not hasattr(self, '_mobi') or not self._mobi:
             try:
-                self._mobi =  BookFileVersion.objects.filter(
+                self._mobi = BookFileVersion.objects.filter(
                     book=self,
                     filetype=BookFileVersion.MOBI,
                 )[0]
@@ -132,6 +132,9 @@ class Series(TimeStampedModel):
     @property
     def is_series(self):
         return True
+
+    class Meta:
+        verbose_name_plural = 'series'
 
 
 
