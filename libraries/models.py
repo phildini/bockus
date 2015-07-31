@@ -14,7 +14,7 @@ class Library(TimeStampedModel):
         return self.title
 
     class Meta:
-        verbose_plural_name = 'libraries'
+        verbose_name_plural = 'libraries'
 
 
 class Librarian(TimeStampedModel):
