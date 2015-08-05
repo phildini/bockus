@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/Env/booksonas/
+cd /home/deploy/Env/booksonas/
 source bin/activate
 cd /home/deploy/bockus/
 git pull --rebase
