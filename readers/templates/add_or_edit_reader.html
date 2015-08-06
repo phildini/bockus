@@ -17,6 +17,7 @@ Add Reader
   <ul>
     {{ form.as_ul }}
   </ul>
+  {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
   <input id="save_reader" type="submit" value="Save" />
 </form>
 <a href="{% url "reader-list" %}">Reader List</a>

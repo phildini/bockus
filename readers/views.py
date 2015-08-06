@@ -61,10 +61,14 @@ class CreateReaderView(UserOwnedObjectMixin, CreateView):
     fields = ['kind', 'email']
 
     def get_success_url(self):
+        if self.request.POST.get('next'):
+            return self.request.POST.get('next')
         return reverse('reader-list')
 
     def get_context_data(self, **kwargs):
         context = super(CreateReaderView, self).get_context_data(**kwargs)
+        if self.request.GET.get('next'):
+            context['next'] = self.request.GET.get('next')
         context['action'] = reverse('reader-create')
 
         return context

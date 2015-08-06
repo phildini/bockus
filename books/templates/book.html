@@ -18,7 +18,7 @@
     <p><a href="{% url "book-send" pk=book.id reader=kindle.id %}">Send Book to {{ kindle }}</a></p>
     {% endfor %}
     {% else %}
-    <p>You have kindles registered, but this book doesn't have a kindle-compatible file in your dropbox. Try adding one and re-importing, or <a href="{% url "reader-create" %}">add a different reader</a>.</p>
+    <p>You have kindles registered, but this book doesn't have a kindle-compatible file in your dropbox. Try adding one and re-importing, or <a href="{% url "reader-create" %}?next={% url "book-detail" pk=book.id %}">add a different reader</a>.</p>
     {% endif %}
 {% elif other_readers %}
     {% if can_send_to_other %}
@@ -26,9 +26,9 @@
     <p><a href="{% url "book-send" pk=book.id reader=reader.id %}">Send Book to {{ reader }}</a></p>
     {% endfor %}
     {% else %}
-    <p>You have iBooks registered, but this book doesn't have a iBooks-compatible file in your dropbox. Try adding one and re-importing, or <a href="{% url "reader-create" %}">add a different reader</a>.</p>
+    <p>You have iBooks registered, but this book doesn't have a iBooks-compatible file in your dropbox. Try adding one and re-importing, or <a href="{% url "reader-create" %}?next={% url "book-detail" pk=book.id %}">add a different reader</a>.</p>
     {% endif %}
 {% else %}
-<p>Hmm... No eBook readers attached to this account. Why not <a href="{% url "reader-create" %}">add one</a>?</p>
+<p>Hmm... No eBook readers attached to this account. Why not <a href="{% url "reader-create" %}?next={% url "book-detail" pk=book.id %}">add one</a>?</p>
 {% endif %}
 {% endblock %}
