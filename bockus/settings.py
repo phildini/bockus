@@ -198,13 +198,13 @@ LOGGING = {
         'django.request': {
             'handlers': ['console', 'loggly-handler'],
             'level': 'INFO',
-            'propagate': False,
-        },
-        'post_to_social': {
-            'handlers': ['console', 'loggly-handler'],
-            'level': 'INFO',
             'propagate': True,
         },
+        'django.db.backends': {
+            'handlers': ['console', 'loggly-handler'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
         'loggly_logs':{
             'handlers': ['console', 'loggly-handler'],
             'propagate': True,
