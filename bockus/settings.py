@@ -204,7 +204,7 @@ LOGGING = {
             'handlers': ['console', 'loggly-handler'],
             'level': 'DEBUG',
             'propagate': True,
-        }
+        },
         'loggly_logs':{
             'handlers': ['console', 'loggly-handler'],
             'propagate': True,
