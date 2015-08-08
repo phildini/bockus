@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 def get_env_variable(var_name):
     """ Get the environment variable or return exception """
@@ -197,12 +199,12 @@ LOGGING = {
     'loggers': {
         'django.request': {
             'handlers': ['console', 'loggly-handler'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
         'django.db.backends': {
             'handlers': ['console', 'loggly-handler'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'loggly_logs':{
