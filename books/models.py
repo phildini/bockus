@@ -5,6 +5,7 @@ from django.utils.timezone import now
 from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from libraries.models import Library
+from readers.models import Reader
 
 
 class Book(TimeStampedModel):
@@ -114,6 +115,32 @@ class BookFileVersion(TimeStampedModel):
 
     def __str__(self):
         return "{} - {}".format(self.book.title, self.filetype)
+
+
+class BookEmail(TimeStampedModel):
+    PENDING = 'pending'
+    PROCESSING = 'processing'
+    SENT = 'sent'
+    ERROR = 'error'
+    STATUSES = (
+        ('pending', 'pending'),
+        ('processing', 'processing'),
+        ('sent', 'sent'),
+        ('error', 'error'),
+    )
+
+    book_file = models.ForeignKey('BookFileVersion')
+    reader = models.ForeignKey(Reader)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUSES,
+        default=PENDING,
+    )
+
+    def __str__(self):
+        return "{}: {} to {}".format(
+            self.status, self.book_file.id, self.reader,
+        )
 
 
 class Series(TimeStampedModel):

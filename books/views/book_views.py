@@ -26,6 +26,7 @@ from books.forms import ImportForm
 from books.models import (
     Book,
     BookFileVersion,
+    BookEmail,
     Series,
 )
 
@@ -199,45 +200,22 @@ class SendBookView(View):
         else:
             book_file_version = book.get_version_for_other()
         if book_file_version:
-            book_file_path = book_file_version.path
-            try:
-                dropbox_app_creds = SocialApp.objects.filter(
-                    provider='dropbox_oauth2'
-                )[0]
-                token = SocialToken.objects.get(
-                    account__user=book.added_by,
-                    app__provider='dropbox_oauth2'
-                ).token
-            except:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    "Couldn't make connection to Dropbox",
-                )
-                return redirect(book)
-
-            client = dropbox.client.DropboxClient(token)
-
-            message = EmailMessage(
-                subject='A book for you!',
-                body=book.title,
-                from_email="books@booksonas.com",
-                to=[reader.email,],
+            BookEmail.objects.create(
+                book_file=book_file_version,
+                reader=reader,
             )
-            f, metadata = client.get_file_and_metadata(book_file_path)
-            message.attach(
-                'book.{}'.format(book_file_version.filetype),
-                f.read(),
-                metadata.get('mime_type'),
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                "Book is on its way!",
             )
-            message.send()
-            messages.add_message(request, messages.SUCCESS, 'Book emailed!')
+
             return redirect(book)
 
         messages.add_message(
             request,
             messages.INFO,
-            'Something went wrong. Try sending again',
+            'Something went wrong. Try sending again.',
         )
         return redirect(book)
 
