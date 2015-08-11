@@ -1,5 +1,6 @@
 import dropbox
 
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
@@ -43,7 +44,7 @@ SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 class LibraryMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated():
             return redirect(
                 '{}?next={}'.format(settings.LOGIN_URL, request.path)
             )
@@ -88,6 +89,7 @@ class BookListView(LibraryMixin, ListView):
             'series',
             'number_in_series',
         )
+
 
 class BookView(LibraryMixin, DetailView):
 
