@@ -1,5 +1,6 @@
 import dropbox
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -20,15 +21,18 @@ from readers.models import Reader
 
 from libraries.models import Library, Librarian
 
+logger = logging.getLogger('scripts')
+
 
 class Command(BaseCommand):
     help = "send pending book emails"
 
     def handle(self, *args, **options):
+        logger.debug('Starting book email send cronjob')
         books_to_send = BookEmail.objects.filter(
             status=BookEmail.PENDING)[:4]
-
         for book_email in books_to_send:
+            logger.debug('Working on email job %s' % book_email.id)
             book_email.status = BookEmail.PROCESSING
             book_email.save()
             book_file_path = book_email.book_file.path
@@ -42,7 +46,9 @@ class Command(BaseCommand):
                     app__provider='dropbox_oauth2'
                 ).token
             except:
-                # TODO: Log here
+                logger.exception(
+                    'Error getting dropbox token for email job %s' % book_email.id
+                )
                 book_email.status = BookEmail.ERROR
                 book_email.save()
             if token:
@@ -63,4 +69,5 @@ class Command(BaseCommand):
                 message.send()
                 book_email.status=BookEmail.SENT
                 book_email.save()
-                #TODO: Log here
+                logger.debug('Successfully sent %s' % book_email.id)
+        logger.debug('Book email cronjob finished')

@@ -212,5 +212,10 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
+        'scripts':{
+            'handlers': ['console', 'loggly-handler'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
     },
 }
