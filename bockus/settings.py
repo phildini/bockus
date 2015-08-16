@@ -187,7 +187,6 @@ LOGGING = {
         'loggly-handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.SysLogHandler',
-            'facility': 'local5',
             'formatter': 'loggly',
         },
         'console': {
