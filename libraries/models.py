@@ -28,3 +28,44 @@ class Librarian(TimeStampedModel):
             self.library,
         )
 
+
+class LibraryImport(TimeStampedModel):
+    PENDING = 'pending'
+    PROCESSING = 'processing'
+    DONE = 'done'
+    ERROR = 'error'
+
+    DROPBOX = 'dropbox'
+
+    STATUSES = (
+        (PENDING, 'pending'),
+        (PROCESSING, 'processing'),
+        (DONE, 'done'),
+        (ERROR, 'error'),
+    )
+
+    SOURCES = (
+        (DROPBOX, 'dropbox'),
+    )
+
+    librarian = models.ForeignKey('Librarian')
+    source = models.CharField(
+        max_length=20,
+        choices=SOURCES,
+        default=DROPBOX,
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUSES,
+        default=PENDING,
+    )
+    path = models.TextField()
+
+    def __str__(self):
+        return "{}: from {} into {}".format(
+            self.status,
+            self.source,
+            self.librarian.library,
+        )
+
+

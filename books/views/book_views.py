@@ -19,7 +19,7 @@ from django.views.generic import (
     View,
 )
 
-from allauth.socialaccount.models import SocialApp, SocialToken
+from allauth.socialaccount.models import SocialToken
 
 from books.forms import ImportForm
 
@@ -30,14 +30,9 @@ from books.models import (
     Series,
 )
 
-from books.utils import (
-    parse_folder,
-    parse_multiple_folders,
-)
-
 from readers.models import Reader
 
-from libraries.models import Library, Librarian
+from libraries.models import Library, Librarian, LibraryImport
 
 SEARCH_UPDATE_MESSAGE = "Changes may not show in search immediately."
 
@@ -260,30 +255,31 @@ class ImportBooksView(FormView):
 
     def form_valid(self, form):
         try:
-            library = Library.objects.get(
-                librarian__user=self.request.user,
-            )
-        except Library.DoesNotExist:
+            librarian = Librarian.objects.get(user=self.request.user)
+        except Librarian.DoesNotExist:
             library = Library.objects.create(
                 title="{}'s Library".format(self.request.user),
             )
-            Librarian.objects.create(
+            librarian = Librarian.objects.create(
                 user=self.request.user,
                 library=library,
             )
 
         if 'select_all_option' in form.cleaned_data.get('folders'):
-            parse_folder(
-                client=self.client,
+            LibraryImport.objects.create(
+                librarian=librarian,
                 path='/',
-                library=library,
-                user=self.request.user,
             )
+
         else:
-            parse_multiple_folders(
-                client=self.client,
-                folders=form.cleaned_data.get('folders'),
-                library=library,
-                user=self.request.user,
-            )
+            for folder in form.cleaned_data.get('folders'):
+                LibraryImport.objects.create(
+                    librarian=librarian,
+                    path=folder,
+                )
+        messages.add_message(
+            self.request,
+            messages.INFO,
+            'Import queued. Check back soon!',
+        )
         return super(ImportBooksView, self).form_valid(form)
