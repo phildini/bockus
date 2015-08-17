@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
     url(r'^readers/', include(readers.urls.readerpatterns)),
+    url(r'^shelves/', include(books.urls.shelfpatterns)),
     url(r'^search/', LibrarySearchView.as_view(), name='search'),
     url(r'^$', HomeView.as_view(), name='home-view'),
 ]

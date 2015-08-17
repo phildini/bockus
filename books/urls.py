@@ -59,3 +59,27 @@ seriespatterns = patterns('',
         name='series-delete',
     ),
 )
+
+shelfpatterns = patterns('',
+    url(r'^$', books.views.ShelfListView.as_view(), name='shelf-list'),
+    url(
+        r'^(?P<pk>\d+)/$',
+        books.views.ShelfView.as_view(),
+        name='shelf-detail',
+    ),
+    url(
+        r'^new$',
+        books.views.CreateShelfView.as_view(),
+        name='shelf-create',
+    ),
+    url(
+        r'^edit/(?P<pk>\d+)/$',
+        books.views.EditShelfView.as_view(),
+        name='shelf-edit',
+    ),
+    url(
+        r'^delete/(?P<pk>\d+)/$',
+        books.views.DeleteShelfView.as_view(),
+        name='shelf-delete',
+    ),
+)

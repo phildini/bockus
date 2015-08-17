@@ -1,16 +1,11 @@
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.shortcuts import (
-    get_object_or_404,
-    redirect,
-)
 from django.views.generic import (
     CreateView,
     DeleteView,
     DetailView,
     ListView,
     UpdateView,
-    View,
 )
 
 from books.models import (
@@ -52,7 +47,7 @@ class SeriesView(LibraryMixin, DetailView):
 class CreateSeriesView(LibraryMixin, CreateView):
 
     model = Series
-    template_name = "add_or_edit_series.html"
+    template_name = "series_edit.html"
     fields = ['name', 'author']
 
     def get_success_url(self):
@@ -68,7 +63,7 @@ class CreateSeriesView(LibraryMixin, CreateView):
 class EditSeriesView(LibraryMixin, UpdateView):
 
     model = Series
-    template_name = "add_or_edit_series.html"
+    template_name = "series_edit.html"
     fields = ['name', 'author']
 
     def get_success_url(self):

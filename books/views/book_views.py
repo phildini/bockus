@@ -116,7 +116,7 @@ class BookView(LibraryMixin, DetailView):
 class CreateBookView(LibraryMixin, CreateView):
 
     model = Book
-    template_name = "add_or_edit_book.html"
+    template_name = "book_edit.html"
     fields = ['title', 'author', 'series', 'number_in_series']
 
     def get_success_url(self):
@@ -126,7 +126,7 @@ class CreateBookView(LibraryMixin, CreateView):
 class EditBookView(LibraryMixin, UpdateView):
 
     model = Book
-    template_name = "add_or_edit_book.html"
+    template_name = "book_edit.html"
     fields = ['title', 'author', 'series', 'number_in_series']
 
     def get_success_url(self):

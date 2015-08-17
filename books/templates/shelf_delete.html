@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - <a href="{% url "shelf-list" %}">Shelves</a> - Delete Shelf{% endblock %}
+{% block content %}
+
+<p>Are you sure you want to delete the shelf "{{ shelf }}"?</p>
+
+<form action="{% url "shelf-delete" pk=shelf.id %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url "shelf-list" %}">No, cancel.</a>
+</form>
+{% endblock %}

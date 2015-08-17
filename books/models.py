@@ -164,6 +164,29 @@ class Series(TimeStampedModel):
         verbose_name_plural = 'series'
 
 
+class Shelf(TimeStampedModel):
+
+    name = models.CharField(max_length=255)
+    library = models.ForeignKey(Library)
+    meta = JSONField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('shelf-detail', kwargs={'pk':self.id})
+
+    class Meta:
+        verbose_name_plural = 'shelves'
 
 
+class BookOnShelf(TimeStampedModel):
 
+    book = models.ForeignKey('Book')
+    shelf = models.ForeignKey('Shelf')
+
+    def __str__(self):
+        return '"{}" on {}'.format(self.book, self.shelf)
+
+    class Meta:
+        verbose_name_plural = 'books on shelves'
