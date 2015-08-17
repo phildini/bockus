@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 client = dropbox.client.DropboxClient(token)
 
                 message = EmailMessage(
-                    subject='A book for you!',
+                    subject='[Booksonas] A book for you!',
                     body=book_email.book_file.book.title,
                     from_email="books@booksonas.com",
                     to=[book_email.reader.email,],

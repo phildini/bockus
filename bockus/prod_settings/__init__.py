@@ -16,5 +16,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECRET_KEY = get_env_variable("SECRET_KEY")
 
+LOGGING['handlers']['loggly-handler']['address'] = '/dev/log'
 LOGGING['loggers']['scripts']['handlers'] = ['loggly-handler']
 LOGGING['loggers']['loggly_logs']['handlers'] = ['loggly-handler']

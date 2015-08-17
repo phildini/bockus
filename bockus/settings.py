@@ -188,7 +188,6 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.SysLogHandler',
             'formatter': 'loggly',
-            'address': '/dev/log',
         },
         'console': {
             'level': 'DEBUG',

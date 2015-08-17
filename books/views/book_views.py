@@ -280,6 +280,6 @@ class ImportBooksView(FormView):
         messages.add_message(
             self.request,
             messages.INFO,
-            'Import queued. Check back soon!',
+            "We've started importing your books. Hooray! You'll receive an email when we're all done.",
         )
         return super(ImportBooksView, self).form_valid(form)
