@@ -110,11 +110,16 @@ class BookListView(LibraryMixin, ListView):
         form = forms.Form(**self.get_form_kwargs())
         queryset = self.get_queryset()
         page_size = self.get_paginate_by(queryset)
+        page_num = 1
+        if self.request.GET.get('page'):
+            page_num = int(self.request.GET.get('page'))
+        else:
+            page_num = int(form.data.get('page', 1))
         paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
-        choices = [(book.id, book.title) for book in page]
+        choices = [(book.id, book.title) for book in paginator.page(page_num)]
         actions = [
             ('merge', 'Merge Selected'),
-            ('delete', 'Delete Selected'),
+            # ('delete', 'Delete Selected'),
         ]
         form.fields['books'] = forms.MultipleChoiceField(
             required=False,
@@ -124,6 +129,10 @@ class BookListView(LibraryMixin, ListView):
         form.fields['actions'] = forms.ChoiceField(
             required=False,
             choices=actions,
+        )
+        form.fields['page'] = forms.IntegerField(
+            required=False,
+            widget=forms.HiddenInput()
         )
         return form
 
@@ -146,7 +155,12 @@ class BookListView(LibraryMixin, ListView):
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data())
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            'Something went wrong. Try again.',
+        )
+        return redirect(reverse('book-list'))
 
     def get_context_data(self, **kwargs):
         context = super(BookListView, self).get_context_data(**kwargs)
@@ -278,7 +292,12 @@ class MergeBookView(TemplateView):
         meta['merged'] = merged_books
         new_book.meta = json.dumps(meta)
         new_book.save()
-        return redirect(reverse('book-list'))
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            "Successfully merged books!",
+        )
+        return redirect(reverse('book-detail', args=[new_book.pk]))
 
 
     def get_context_data(self, **kwargs):
@@ -320,7 +339,7 @@ class SendBookView(View):
 
         messages.add_message(
             request,
-            messages.INFO,
+            messages.ERROR,
             'Something went wrong. Try sending again.',
         )
         return redirect(book)
