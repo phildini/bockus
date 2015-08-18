@@ -2,18 +2,7 @@
 
 {% block heading %}{{ block.super }} - <a href="{% url "series-list" %}">Series</a> - {{ series }}{% endblock %}
 {% block content %}
-
-<ul>
-{% for book in books %}
-<li>
-<p>{{ book }} | <a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a></p>
-{% for reader in readers %}
-<p><a href="{% url "book-send" pk=book.id reader=reader.id %}">Send Book to {{ reader }}</a></p>
-{% endfor %}
-</li>
-{% endfor %}
-</ul>
-
+{% include "book_list_snippet.html" %}
 <p><a href="{% url "series-edit" pk=series.id %}">Edit</a> | <a href="{% url "series-delete" pk=series.id %}">Delete</a></p>
 <p><a href="{% url "series-list" %}">Series List</a></p>
 {% endblock %}

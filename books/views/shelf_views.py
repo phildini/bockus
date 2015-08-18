@@ -15,6 +15,7 @@ from django.views.generic import (
 
 from books.models import (
     Book,
+    BookOnShelf,
     Shelf,
 )
 
@@ -35,9 +36,15 @@ class ShelfView(LibraryMixin, DetailView):
 
     model = Shelf
     template_name = "shelf.html"
-    paginate_by = 25
-    paginate_orphans = 5
 
+    def get_context_data(self, **kwargs):
+        context = super(ShelfView, self).get_context_data(**kwargs)
+        context['books'] = [
+            book_on_shelf.book for book_on_shelf in BookOnShelf.objects.filter(
+                shelf=self.get_object()
+            )
+        ]
+        return context
 
 class CreateShelfView(LibraryMixin, CreateView):
 

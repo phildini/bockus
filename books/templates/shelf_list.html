@@ -2,8 +2,7 @@
 
 {% block heading %}{{ block.super }} - Shelves{% endblock %}
 {% block content %}
-{% include "search_form.html" %}
-<p><a href="{% url "series-create" %}">Add Series</a> | <a href="{% url "reader-create" %}">Add Reader</a></p>
+{% include "actions_list.html" %}
 <ul>
   {% for shelf in object_list %}
     <li class="shelf"><a href="{{ shelf.get_absolute_url }}">{{ shelf }}</a> (<a href="{% url "shelf-edit" pk=shelf.id %}">Edit</a> | <a href="{% url "shelf-delete" pk=shelf.id %}">Delete</a>)</li>

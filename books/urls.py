@@ -39,6 +39,10 @@ bookpatterns = patterns('',
         books.views.MergeBookView.as_view(),
         name='books-merge',
     ),
+    url(r'^shelve/$',
+        books.views.ShelveBooksView.as_view(),
+        name='books-shelve',
+    ),
 )
 
 seriespatterns = patterns('',

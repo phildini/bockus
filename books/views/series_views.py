@@ -41,7 +41,6 @@ class SeriesView(LibraryMixin, DetailView):
         ).order_by(
             'number_in_series',
         )
-        context['readers'] = Reader.objects.filter(user=self.request.user)
         return context
 
 class CreateSeriesView(LibraryMixin, CreateView):

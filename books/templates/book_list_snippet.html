@@ -1,0 +1,7 @@
+<ul>
+{% for book in books %}
+<li>
+<p>{{ book }} | <a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a></p>
+</li>
+{% endfor %}
+</ul>

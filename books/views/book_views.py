@@ -32,7 +32,9 @@ from books.models import (
     Book,
     BookFileVersion,
     BookEmail,
+    BookOnShelf,
     Series,
+    Shelf,
 )
 
 from readers.models import Reader
@@ -118,6 +120,7 @@ class BookListView(LibraryMixin, ListView):
         paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
         choices = [(book.id, book.title) for book in paginator.page(page_num)]
         actions = [
+            ('shelve', 'Add to shelf...'),
             ('merge', 'Merge Selected'),
             # ('delete', 'Delete Selected'),
         ]
@@ -145,13 +148,13 @@ class BookListView(LibraryMixin, ListView):
 
     def form_valid(self, form):
         if form.cleaned_data.get('actions'):
-            if (
-                form.cleaned_data.get('actions') == 'merge' and
-                form.cleaned_data.get('books')
-            ):
+            if form.cleaned_data.get('books'):
                 books = [int(book) for book in form.cleaned_data.get('books')]
-                self.request.session['books_to_merge'] = json.dumps(books)
-                return redirect(reverse('books-merge'))
+                self.request.session['selected_books'] = json.dumps(books)
+                if form.cleaned_data.get('actions') == 'merge':
+                    return redirect(reverse('books-merge'))
+                if form.cleaned_data.get('actions') == 'shelve':
+                    return redirect(reverse('books-shelve'))
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
@@ -267,10 +270,10 @@ class MergeBookView(TemplateView):
     template_name = "books_merge.html"
 
     def post(self, request, *args, **kwargs):
-        books_to_merge = json.loads(self.request.session.get('books_to_merge'))
+        selected_books = json.loads(self.request.session.get('selected_books'))
         try:
             books = Book.objects.filter(
-                pk__in=books_to_merge,
+                pk__in=selected_books,
                 library__librarian__user=self.request.user,
             ).order_by('-modified')
         except:
@@ -302,13 +305,72 @@ class MergeBookView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MergeBookView, self).get_context_data(**kwargs)
-        books_to_merge = json.loads(self.request.session.get('books_to_merge'))
+        selected_books = json.loads(self.request.session.get('selected_books'))
         context['books'] = get_list_or_404(
             Book.objects,
-            pk__in=books_to_merge,
+            pk__in=selected_books,
             library__librarian__user=self.request.user,
         )
         return context
+
+
+class ShelveBooksView(FormView):
+
+    template_name = "shelve_books.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ShelveBooksView, self).get_context_data(**kwargs)
+        selected_books = json.loads(self.request.session.get('selected_books'))
+        context['books'] = get_list_or_404(
+            Book.objects,
+            pk__in=selected_books,
+            library__librarian__user=self.request.user,
+        )
+        return context
+
+    def get_form_kwargs(self):
+        """
+        Right now, using this only for POST, PUT
+        """
+        kwargs = {}
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
+
+    def get_form(self, form_class=None):
+        form = forms.Form(**self.get_form_kwargs())
+        shelves = [
+            (shelf.id, shelf.name) for shelf in Shelf.objects.filter(
+                library__librarian__user=self.request.user
+            )
+        ]
+        form.fields['shelf'] = forms.ChoiceField(
+            choices=shelves,
+            required=True,
+        )
+        return form
+
+    def get_success_url(self):
+        return reverse('book-list')
+
+    def form_valid(self, form):
+        shelf = get_object_or_404(Shelf.objects, pk=form.cleaned_data.get('shelf'))
+        books = get_list_or_404(
+            Book.objects,
+            pk__in=json.loads(self.request.session.get('selected_books')),
+            library__librarian__user=self.request.user,
+        )
+        for book in books:
+            BookOnShelf.objects.create(shelf=shelf, book=book)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            "Added books to {}".format(shelf)
+        )
+        return redirect(reverse('shelf-detail', kwargs={'pk':shelf.id}))
 
 
 class SendBookView(View):
