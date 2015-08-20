@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
-{% block heading %}{{ block.super }} - <a href="{% url "shelf-list" %}">Shelves</a> - {{ shelf }}{% endblock %}
+{% block heading %}
+{% if shelf %}
+{{ block.super }} - <a href="{% url "shelf-list" %}">Shelves</a> - {{ shelf }}
+{% else %}
+{{ block.super }} - <a href="{% url "shelf-list" %}">Shelves</a> - {{ shelf_name }}
+{% endif %}
+{% endblock %}
 {% block content %}
 {% include "book_list_snippet.html" %}
+{% include "page_controls_snippet.html" %}
+{% if shelf %}
 <p><a href="{% url "shelf-edit" pk=shelf.id %}">Edit</a> | <a href="{% url "shelf-delete" pk=shelf.id %}">Delete</a></p>
+{% endif %}
 <p><a href="{% url "shelf-list" %}">Shelf List</a></p>
 {% endblock %}

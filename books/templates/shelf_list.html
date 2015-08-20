@@ -4,15 +4,10 @@
 {% block content %}
 {% include "actions_list.html" %}
 <ul>
+    <li class="shelf"><a href="{% url "shelf-last-week" %}">Added in Last Week</a>
+    <li class="shelf"><a href="{% url "shelf-last-month" %}">Added in Last Month</a></li>
   {% for shelf in object_list %}
     <li class="shelf"><a href="{{ shelf.get_absolute_url }}">{{ shelf }}</a> (<a href="{% url "shelf-edit" pk=shelf.id %}">Edit</a> | <a href="{% url "shelf-delete" pk=shelf.id %}">Delete</a>)</li>
   {% endfor %}
 </ul>
-{% if page_obj.has_previous or page_obj.has_next %}
-    <div>
-        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">{% endif %}&laquo; Previous{% if page_obj.has_previous %}</a>{% endif %}
-        |
-        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">{% endif %}Next &raquo;{% if page_obj.has_next %}</a>{% endif %}
-    </div>
-{% endif %}
 {% endblock %}

@@ -91,4 +91,14 @@ shelfpatterns = patterns('',
         books.views.DeleteShelfView.as_view(),
         name='shelf-delete',
     ),
+    url(
+        r'^lastweek$',
+        books.views.LastWeekShelfView.as_view(),
+        name='shelf-last-week',
+    ),
+    url(
+        r'^lastmonth$',
+        books.views.LastMonthShelfView.as_view(),
+        name='shelf-last-month',
+    ),
 )

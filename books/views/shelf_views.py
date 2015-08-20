@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.shortcuts import (
@@ -104,3 +106,43 @@ class DeleteShelfView(LibraryMixin, DeleteView):
         ))
 
         return super(DeleteShelfView, self).form_valid(form)
+
+
+class LastWeekShelfView(LibraryMixin, ListView):
+
+    model = Book
+    template_name = "shelf.html"
+    paginate_by = 25
+    paginate_orphans = 5
+
+    def get_queryset(self):
+        queryset = super(LastWeekShelfView, self).get_queryset()
+        last_week = datetime.now() - timedelta(days=7)
+        queryset.filter(created__gt=last_week)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(LastWeekShelfView, self).get_context_data(**kwargs)
+        context['shelf_name'] = 'Added in Last Week'
+        context['books'] = context['object_list']
+        return context
+
+
+class LastMonthShelfView(LibraryMixin, ListView):
+
+    model = Book
+    template_name = "shelf.html"
+    paginate_by = 25
+    paginate_orphans = 5
+
+    def get_queryset(self):
+        queryset = super(LastMonthShelfView, self).get_queryset()
+        last_week = datetime.now() - timedelta(days=30)
+        queryset.filter(created__gt=last_week)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(LastMonthShelfView, self).get_context_data(**kwargs)
+        context['shelf_name'] = 'Added in Last Month'
+        context['books'] = context['object_list']
+        return context
