@@ -122,7 +122,7 @@ class BookListView(LibraryMixin, ListView):
         actions = [
             ('shelve', 'Add to shelf...'),
             ('merge', 'Merge Selected'),
-            # ('delete', 'Delete Selected'),
+            ('delete', 'Delete Selected'),
         ]
         form.fields['books'] = forms.MultipleChoiceField(
             required=False,
@@ -155,6 +155,8 @@ class BookListView(LibraryMixin, ListView):
                     return redirect(reverse('books-merge'))
                 if form.cleaned_data.get('actions') == 'shelve':
                     return redirect(reverse('books-shelve'))
+                if form.cleaned_data.get('actions') == 'delete':
+                    return redirect(reverse('books-delete'))
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
@@ -371,6 +373,38 @@ class ShelveBooksView(FormView):
             "Added books to {}".format(shelf)
         )
         return redirect(reverse('shelf-detail', kwargs={'pk':shelf.id}))
+
+
+class DeleteBooksView(TemplateView):
+
+    template_name = "books_delete.html"
+
+    def post(self, request, *args, **kwargs):
+        selected_books = json.loads(self.request.session.get('selected_books'))
+        try:
+            books = Book.objects.filter(
+                pk__in=selected_books,
+                library__librarian__user=self.request.user,
+            ).order_by('-modified')
+        except:
+            raise Http404()
+        books.delete()
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            "Successfully deleted books",
+        )
+        return redirect(reverse('book-list'))
+
+    def get_context_data(self, **kwargs):
+        context = super(DeleteBooksView, self).get_context_data(**kwargs)
+        selected_books = json.loads(self.request.session.get('selected_books'))
+        context['books'] = get_list_or_404(
+            Book.objects,
+            pk__in=selected_books,
+            library__librarian__user=self.request.user,
+        )
+        return context
 
 
 class SendBookView(View):

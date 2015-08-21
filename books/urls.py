@@ -43,6 +43,10 @@ bookpatterns = patterns('',
         books.views.ShelveBooksView.as_view(),
         name='books-shelve',
     ),
+    url(r'^delete/$',
+        books.views.DeleteBooksView.as_view(),
+        name='books-delete',
+    ),
 )
 
 seriespatterns = patterns('',

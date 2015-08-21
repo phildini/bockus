@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - Delete Books{% endblock %}
+{% block content %}
+
+<p>Are you sure you want to delete the following books?</p>
+<ul>
+{% for book in books %}
+    <li>{{ book }}</li>
+{% endfor %}
+</ul>
+
+<form action="{% url "books-delete" %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url "book-list" %}">No, cancel.</a>
+</form>
+{% endblock %}
