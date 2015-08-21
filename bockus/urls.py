@@ -23,6 +23,7 @@ import readers.urls
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^invitations/', include('invitations.urls', namespace='invitations')),
     url(r'^books/', include(books.urls.bookpatterns)),
     url(r'^series/', include(books.urls.seriespatterns)),
     url(r'^readers/', include(readers.urls.readerpatterns)),
