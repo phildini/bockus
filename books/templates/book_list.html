@@ -15,5 +15,10 @@
 {% include "page_controls_snippet.html" %}
 {% else %}
 <p>No books in library!</p>
+{% if running_imports %}
+<p>We're currently importing some books for you, and we will send you en email when they're ready.</p>
+{% else %}
+<p><a href="{% url "books-import" %}">Import some books!</a></p>
+{% endif %}
 {% endif %}
 {% endblock %}

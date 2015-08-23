@@ -169,6 +169,10 @@ class BookListView(LibraryMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(BookListView, self).get_context_data(**kwargs)
+        context['running_imports'] = LibraryImport.objects.filter(
+            librarian__user=self.request.user,
+            status__in=(LibraryImport.PENDING, LibraryImport.PROCESSING),
+        )
         context['form'] = self.get_form()
         return context
 
