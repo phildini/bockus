@@ -11,7 +11,7 @@ Add Reader
 
 {% block content %}
 <p>Here's where you can add a reader to send books to.</p>
-<p>If you're adding a Send-to-Kindle address, you need to add "books@booksonas.com" to your Approved Personal Document E-Mail List. <a href="https://www.amazon.com/gp/help/customer/display.html/ref=kinw_myk_wl_ln?ie=UTF8&nodeId=200767340">Learn More.</a></p>
+<p>If you're adding a Send-to-Kindle address, you need to add <strong>books@booksonas.com</strong> to your Approved Personal Document E-Mail List. <a href="https://www.amazon.com/gp/help/customer/display.html/ref=kinw_myk_wl_ln?ie=UTF8&nodeId=200767340">Learn More.</a></p>
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
   <ul>
