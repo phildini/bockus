@@ -13,18 +13,18 @@
         </script>
     </head>
     <body>
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
         <h1>
         {% block heading %}
         <a href="/">Booksonas</a>
         {% endblock %}
         </h1>
+        {% if messages %}
+        <ul class="messages" style="list-style: none">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="border: 2px solid lightgray;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         {% block content %}
         {% endblock %}
         {% if user.is_authenticated %}
