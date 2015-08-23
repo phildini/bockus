@@ -2,6 +2,7 @@
 <div>
     {% if page_obj.number != 1 %}<a href="?page=1">&laquo; First</a> | {% endif %}
     {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">&lt; Previous</a> | {% endif %}
+    <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>{% if page_obj.has_next %} | {% endif %}
     {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next &gt;</a> | {% endif %}
     {% if page_obj.number != paginator.num_pages %}<a href="?page={{ paginator.num_pages }}">Last &raquo;</a>{% endif %}
 </div>
