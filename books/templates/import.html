@@ -3,7 +3,8 @@
 {% block heading %}{{ block.super }} - <a href="{% url "book-list" %}">Books</a> - Import Books{% endblock %}
 {% block content %}
 
-<p>Right now, Booksonas only imports all books from top-level directories</p>
+<p>Select a set of folders from your Dropbox.</p>
+</p>Booksonas will import .mobi, .epub, and .pdf files from all the folders you selected, and all the folders in those folders.</p>
 
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
@@ -11,6 +12,7 @@
     {{ form.as_p }}
   </ul>
   <input id="import" type="submit" value="Import" />
+  <p>Books will be imported in the background, and may not be available right away. We'll send you an email when your books have been imported.</p>
 </form>
 
 <a href="{% url "book-list" %}">back to book list</a>
