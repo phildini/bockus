@@ -34,4 +34,16 @@
 {% else %}
 <p>Hmm... No eBook readers attached to this account. Why not <a href="{% url "reader-create" %}?next={% url "book-detail" pk=book.id %}">add one</a>?</p>
 {% endif %}
+<form action="{% url "book-detail" pk=book.id %}" method="POST">
+    {% csrf_token %}
+    <p>
+        <label for="id_shelf">{{ form.fields.shelf.label }}</label>
+        <select id="id_shelf" name="shelf">
+        {% for id, shelf in form.fields.shelf.choices %}
+            <option value="{{ id }}">{{ shelf }}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" value="Submit" />
+    </p>
+</form>
 {% endblock %}

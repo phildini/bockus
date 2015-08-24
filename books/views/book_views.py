@@ -177,13 +177,18 @@ class BookListView(LibraryMixin, ListView):
         return context
 
 
-class BookView(LibraryMixin, DetailView):
+class BookView(LibraryMixin, FormView):
 
     model = Book
     template_name = "book.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.object = get_object_or_404(Book.objects, pk=kwargs.get('pk'))
+        return super(BookView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(BookView, self).get_context_data(**kwargs)
+        context['book'] = self.object
         context['can_send_to_kindle'] = BookFileVersion.objects.filter(
             book=self.object,
             filetype__in=(BookFileVersion.MOBI, BookFileVersion.PDF),
@@ -200,7 +205,48 @@ class BookView(LibraryMixin, DetailView):
             user=self.request.user,
             kind=Reader.IBOOKS,
         )
+        context['form'] = self.get_form()
         return context
+
+    def get_form_kwargs(self):
+        """
+        Right now, using this only for POST, PUT
+        """
+        kwargs = {}
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
+
+    def get_form(self, form_class=None):
+        form = forms.Form(**self.get_form_kwargs())
+        shelves = [
+            (shelf.id, shelf.name) for shelf in Shelf.objects.filter(
+                library__librarian__user=self.request.user
+            )
+        ]
+        form.fields['shelf'] = forms.ChoiceField(
+            choices=shelves,
+            required=False,
+            label="Add to shelf:",
+        )
+        return form
+
+    def get_success_url(self):
+        return reverse('book-detail', args=[self.object.pk])
+
+    def form_valid(self, form):
+        shelf = get_object_or_404(Shelf.objects, pk=form.cleaned_data.get('shelf'))
+        BookOnShelf.objects.create(shelf=shelf, book=self.object)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Added to <a href="{}">shelf</a>'.format(shelf.get_absolute_url()),
+            extra_tags='safe',
+        )
+        return redirect(self.get_success_url())
 
 
 class CreateBookView(LibraryMixin, CreateView):
@@ -374,7 +420,7 @@ class ShelveBooksView(FormView):
         messages.add_message(
             self.request,
             messages.SUCCESS,
-            "Added books to {}".format(shelf)
+            "Added books to shelf"
         )
         return redirect(reverse('shelf-detail', kwargs={'pk':shelf.id}))
 

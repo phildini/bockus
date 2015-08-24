@@ -21,7 +21,7 @@
         {% if messages %}
         <ul class="messages" style="list-style: none">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="border: 2px solid lightgray;">{{ message }}</li>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="border: 2px solid lightgray;">{% if 'safe' in message.tags %}{{ message | safe }}{% else %}{{ message }}{% endif %}</li>
             {% endfor %}
         </ul>
         {% endif %}
