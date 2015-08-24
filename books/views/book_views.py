@@ -239,7 +239,7 @@ class BookView(LibraryMixin, FormView):
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf.objects, pk=form.cleaned_data.get('shelf'))
-        BookOnShelf.objects.create(shelf=shelf, book=self.object)
+        shelved_book = BookOnShelf.objects.get_or_create(shelf=shelf, book=self.object)
         messages.add_message(
             self.request,
             messages.SUCCESS,
@@ -339,6 +339,13 @@ class MergeBookView(TemplateView):
             meta = {}
             merged_books = []
         for book in books[1:]:
+            shelved_books = BookOnShelf.objects.filter(book=book)
+            for shelved_book in BookOnShelf.objects.filter(book=book):
+                new_shelved_book = BookOnShelf.get_or_create(
+                    book=new_book,
+                    shelf=shelved_book.shelf,
+                )
+            shelved_books.delete()
             for version in BookFileVersion.objects.filter(book=book):
                 version.book = new_book
                 version.save()
@@ -416,7 +423,7 @@ class ShelveBooksView(FormView):
             library__librarian__user=self.request.user,
         )
         for book in books:
-            BookOnShelf.objects.create(shelf=shelf, book=book)
+            shelved_book = BookOnShelf.objects.get_or_create(shelf=shelf, book=book)
         messages.add_message(
             self.request,
             messages.SUCCESS,
