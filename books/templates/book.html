@@ -4,6 +4,9 @@
 {% block content %}
 
 <p><a href="{% url "book-edit" pk=book.id %}">Edit</a> | <a href="{% url "book-delete" pk=book.id %}">Delete</a></p>
+<p>Author: {% if book.author %}{{ book.author }}{% endif %}</p>
+<p>Series: {% if book.series %}{{ book.series }}{% endif %}</p>
+<p>Number in series: {% if book.number_in_series %}{{ book.number_in_series }}{% endif %}</p>
 <p>
     Available in:
     <ul>
