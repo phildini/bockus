@@ -85,14 +85,6 @@ class BookListView(LibraryMixin, ListView):
     paginate_by = 25
     paginate_orphans = 5
 
-    def get_queryset(self):
-        queryset = super(BookListView, self).get_queryset()
-        return queryset.order_by(
-            'author',
-            'series',
-            'number_in_series',
-        )
-
     def get_success_url(self):
         return reverse('book-list')
 
