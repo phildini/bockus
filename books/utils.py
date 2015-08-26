@@ -100,30 +100,39 @@ class DropboxParser(object):
         ebook_meta = None
         name, extension = os.path.splitext(filename)
         if path:
-            with self.client.get_file(path) as f:
-                with open('/tmp/{}'.format(filename), 'wb') as w:
-                    w.write(f.read())
-            file_meta = subprocess.check_output(
-                ['ebook-meta','/tmp/{}'.format(filename)],
-                universal_newlines=True,
-            )
-            os.remove('/tmp/{}'.format(filename))
+            try:
+                with self.client.get_file(path) as f:
+                    with open('/tmp/{}'.format(filename), 'wb') as w:
+                        w.write(f.read())
+                file_meta = subprocess.check_output(
+                    ['ebook-meta','/tmp/{}'.format(filename)],
+                    universal_newlines=True,
+                )
+                os.remove('/tmp/{}'.format(filename))
+            except:
+                logger.exception("Error downloading and processing ebook")
         # Get the details from parsing the ebook meta
         if file_meta:
-            ebook_meta = {
-                info.split(':')[0].strip():info.split(':')[1].strip() for info in file_meta.splitlines()
-            }
+            try:
+                ebook_meta = {
+                    info.split(':')[0].strip():info.split(':')[1].strip() for info in file_meta.splitlines()
+                }
+            except:
+                logger.exception("Error parsing ebook meta")
         if ebook_meta:
             print(ebook_meta)
             if not book.author:
                 book.author = ebook_meta.get('Author(s)')
             if not book.title or book.title == name:
                 book.title = ebook_meta.get('Title')
-            if book.meta:
-                meta = json.loads(book.meta)
-            else:
-                meta = {}
-            meta['published'] = ebook_meta.get('Published')
-            meta['publisher'] = ebook_meta.get('Publisher')
-            book.meta = json.dumps(meta)
+            try:
+                if book.meta:
+                    meta = json.loads(book.meta)
+                else:
+                    meta = {}
+                meta['published'] = ebook_meta.get('Published')
+                meta['publisher'] = ebook_meta.get('Publisher')
+                book.meta = json.dumps(meta)
+            except:
+                logger.exception("Error storing meta into book.meta")
             book.save()

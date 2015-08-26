@@ -45,17 +45,20 @@ class Command(BaseCommand):
                     library=job.librarian.library,
                     user=job.librarian.user,
                 )
-                parser.parse(path=job.path)
-                job.status = LibraryImport.DONE
-                job.save()
+                try:
+                    parser.parse(path=job.path)
+                    job.status = LibraryImport.DONE
+                    job.save()
 
-                message = EmailMessage(
-                    subject='[Booksonas] Import complete!',
-                    body="We've finished importing {}, go login to booksonas.com to see your books!".format(job.path),
-                    from_email="import@booksonas.com",
-                    to=[job.librarian.user.email],
-                )
-                message.send()
+                    message = EmailMessage(
+                        subject='[Booksonas] Import complete!',
+                        body="We've finished importing {}, go login to booksonas.com to see your books!".format(job.path),
+                        from_email="import@booksonas.com",
+                        to=[job.librarian.user.email],
+                    )
+                    message.send()
+                except:
+                    logger.exception("Error parsing path")
             logger.debug('Finished import job %s' % job.id)
         logger.debug('Finished book import cronjob')
 
