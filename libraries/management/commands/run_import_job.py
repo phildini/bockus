@@ -7,9 +7,7 @@ from django.core.mail import EmailMessage
 
 from allauth.socialaccount.models import SocialToken
 
-from books.utils import (
-    parse_folder,
-)
+from books.utils import DropboxParser
 
 from libraries.models import LibraryImport
 
@@ -42,12 +40,12 @@ class Command(BaseCommand):
 
             if token:
                 client = dropbox.client.DropboxClient(token)
-                parse_folder(
+                parser = DropboxParser(
                     client=client,
-                    path=job.path,
                     library=job.librarian.library,
                     user=job.librarian.user,
                 )
+                parser.parse(path=job.path)
                 job.status = LibraryImport.DONE
                 job.save()
 
