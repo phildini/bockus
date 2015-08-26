@@ -23,7 +23,7 @@ class DropboxParser(object):
         self.client = client
         self.library = library
         self.user = user
-        self.can_parse = bool(shutil.which('ebook-meta'))
+        # self.can_parse = bool(shutil.which('ebook-meta'))
         self.items_parsed = 0
         
 
@@ -87,12 +87,12 @@ class DropboxParser(object):
                         storage_provider='dropbox',
                         meta=item,
                     )
-            if self.can_parse:
-                self.parse_ebook_and_update_db(
-                    path=item.get('path'),
-                    book=book,
-                    filename=filename
-                )
+            # if self.can_parse:
+            #     self.parse_ebook_and_update_db(
+            #         path=item.get('path'),
+            #         book=book,
+            #         filename=filename
+            #     )
         self.items_parsed = self.items_parsed + 1
 
     def parse_ebook_and_update_db(self, path, book, filename):
