@@ -2,6 +2,7 @@ import dropbox
 import json
 import logging
 import os
+import shutil
 import subprocess
 
 from books.models import Book, BookFileVersion
@@ -22,13 +23,9 @@ class DropboxParser(object):
         self.client = client
         self.library = library
         self.user = user
-        self.can_parse = False
+        self.can_parse = bool(shutil.which('ebook-meta'))
         self.items_parsed = 0
-        try:
-            ebook_meta = subprocess.check_output(['ebook-meta'])
-            self.can_parse = True
-        except FileNotFoundError:
-            pass
+        
 
     def parse(self, path):
         self.parse_folder(path)
