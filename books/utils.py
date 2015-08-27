@@ -5,7 +5,7 @@ import os
 import shutil
 import subprocess
 
-from books.models import Book, BookFileVersion
+from books.models import Book, BookFileVersion, BookOnShelf
 from libraries.models import Library, Librarian
 
 MIMETYPES = (
@@ -15,6 +15,36 @@ MIMETYPES = (
 )
 
 logger = logging.getLogger('scripts')
+
+
+def merge_books(books):
+    """Takes a list of books and merges them
+    """
+    new_book = books[0]
+    meta_json = new_book.meta
+    if meta_json:
+        meta = json.loads(meta)
+        merged_books = meta.get('merged', [])
+    else:
+        meta = {}
+        merged_books = []
+    for book in books[1:]:
+        shelved_books = BookOnShelf.objects.filter(book=book)
+        for shelved_book in BookOnShelf.objects.filter(book=book):
+            new_shelved_book = BookOnShelf.get_or_create(
+                book=new_book,
+                shelf=shelved_book.shelf,
+            )
+        shelved_books.delete()
+        for version in BookFileVersion.objects.filter(book=book):
+            version.book = new_book
+            version.save()
+        merged_books.append(book.to_dict()),
+        book.delete()
+    meta['merged'] = merged_books
+    new_book.meta = json.dumps(meta)
+    new_book.save()
+    return new_book
 
 
 class DropboxParser(object):
@@ -44,6 +74,7 @@ class DropboxParser(object):
 
     def parse_item(self, item):
         # Are we supporting this type of book?
+        books = None
         if item.get('mime_type') in MIMETYPES:
             filename = item.get('path').split('/')[-1]
             name, extension = os.path.splitext(filename)
@@ -74,7 +105,7 @@ class DropboxParser(object):
                     # Apparently you know nothing, Jon Snow
                     # See if we know about a book with the same title.
                     # If not, create a new book and book file.
-                    book = Book.objects.create(
+                    book = Book.objects.get_or_create(
                         title=name,
                         library=self.library,
                         added_by=self.user,
@@ -93,6 +124,13 @@ class DropboxParser(object):
             #         book=book,
             #         filename=filename
             #     )
+            books = Book.objects.filter(
+                title=name,
+                library=self.library,
+                added_by=self.user,
+            )
+            if len(books) > 1:
+                merge_books(books)
         self.items_parsed = self.items_parsed + 1
 
     def parse_ebook_and_update_db(self, path, book, filename):

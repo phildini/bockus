@@ -27,7 +27,6 @@ from django.views.generic import (
 from allauth.socialaccount.models import SocialToken
 
 from books.forms import ImportForm
-
 from books.models import (
     Book,
     BookFileVersion,
@@ -36,6 +35,7 @@ from books.models import (
     Series,
     Shelf,
 )
+from books.utils import merge_books
 
 from readers.models import Reader
 
@@ -231,7 +231,7 @@ class BookView(LibraryMixin, FormView):
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf.objects, pk=form.cleaned_data.get('shelf'))
-        shelved_book = BookOnShelf.objects.get_or_create(shelf=shelf, book=self.object)
+        shelved_book, created = BookOnShelf.objects.get_or_create(shelf=shelf, book=self.object)
         messages.add_message(
             self.request,
             messages.SUCCESS,
@@ -322,36 +322,13 @@ class MergeBookView(TemplateView):
             ).order_by('-modified')
         except:
             raise Http404()
-        new_book = books[0]
-        meta_json = new_book.meta
-        if meta_json:
-            meta = json.loads(meta)
-            merged_books = meta.get('merged', [])
-        else:
-            meta = {}
-            merged_books = []
-        for book in books[1:]:
-            shelved_books = BookOnShelf.objects.filter(book=book)
-            for shelved_book in BookOnShelf.objects.filter(book=book):
-                new_shelved_book = BookOnShelf.get_or_create(
-                    book=new_book,
-                    shelf=shelved_book.shelf,
-                )
-            shelved_books.delete()
-            for version in BookFileVersion.objects.filter(book=book):
-                version.book = new_book
-                version.save()
-            merged_books.append(book.to_dict()),
-            book.delete()
-        meta['merged'] = merged_books
-        new_book.meta = json.dumps(meta)
-        new_book.save()
+        book = merge_books(books)
         messages.add_message(
             request,
             messages.SUCCESS,
             "Successfully merged books!",
         )
-        return redirect(reverse('book-detail', args=[new_book.pk]))
+        return redirect(reverse('book-detail', args=[book.pk]))
 
 
     def get_context_data(self, **kwargs):
@@ -415,7 +392,7 @@ class ShelveBooksView(FormView):
             library__librarian__user=self.request.user,
         )
         for book in books:
-            shelved_book = BookOnShelf.objects.get_or_create(shelf=shelf, book=book)
+            shelved_book, created = BookOnShelf.objects.get_or_create(shelf=shelf, book=book)
         messages.add_message(
             self.request,
             messages.SUCCESS,
