@@ -143,6 +143,8 @@ EMAIL_HOST_PASSWORD = get_env_variable('MANDRILL_KEY')
 DEFAULT_FROM_EMAIL = 'site@booksonas.com'
 SERVER_EMAIL = 'site@booksonas.com'
 
+SLACK_WEBHOOK_URL = get_env_variable('SLACK_WEBHOOK_URL')
+
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True

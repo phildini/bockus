@@ -1,7 +1,9 @@
 import dropbox
 import json
 import logging
+import requests
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.mail import EmailMessage
 
@@ -59,6 +61,19 @@ class Command(BaseCommand):
                     message.send()
                 except:
                     logger.exception("Error parsing path")
+                    job.status = LibraryImport.ERROR
+                    job.save()
+                    try:
+                        if not settings.DEBUG:
+                            payload = {
+                                'text': 'Error in import job: {}'.format(job.id)
+                            }
+                            r = requests.post(
+                                settings.SLACK_WEBHOOK_URL,
+                                data=json.dumps(payload),
+                            )
+                    except:
+                        logger.exception("Error sending error to slack")
             logger.debug('Finished import job %s' % job.id)
         logger.debug('Finished book import cronjob')
 
