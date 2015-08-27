@@ -105,7 +105,7 @@ class DropboxParser(object):
                     # Apparently you know nothing, Jon Snow
                     # See if we know about a book with the same title.
                     # If not, create a new book and book file.
-                    book = Book.objects.get_or_create(
+                    book, created = Book.objects.get_or_create(
                         title=name,
                         library=self.library,
                         added_by=self.user,
