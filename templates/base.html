@@ -1,6 +1,11 @@
+{% load staticfiles %}
+
 <html>
     <head>
         <title>Booksonas</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cmcenroe.me/writ/0.2.1/writ.min.css">
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -9,10 +14,9 @@
 
           ga('create', 'UA-36515305-8', 'auto');
           ga('send', 'pageview');
-
         </script>
     </head>
-    <body>
+    <body style="margin: 10px;">
         <h1>
         {% block heading %}
         <a href="/">Booksonas</a>
