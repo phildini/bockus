@@ -16,7 +16,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECRET_KEY = get_env_variable("SECRET_KEY")
 
-STATIC_URL = 'http://media.quailcomics.com/assets/'
+STATIC_URL = 'https://media.quailcomics.com/assets/'
 
 LOGGING['handlers']['loggly-handler']['address'] = '/dev/log'
 LOGGING['loggers']['scripts']['handlers'] = ['loggly-handler']
