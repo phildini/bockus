@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import Http404
 from haystack.generic_views import SearchView
 from libraries.models import Library
@@ -8,6 +9,9 @@ class LibrarySearchView(SearchView):
 
     Restricts search to books and series in one Library.
     """
+
+    paginate_by = settings.LIST_PAGINATE_BY
+    paginate_orphans = settings.LIST_PAGINATE_ORPHANS
 
     def get_queryset(self):
         queryset = super(LibrarySearchView, self).get_queryset()

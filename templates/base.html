@@ -17,11 +17,9 @@
         </script>
     </head>
     <body style="margin: 10px;">
-        <h1>
-        {% block heading %}
-        <a href="/">Booksonas</a>
-        {% endblock %}
-        </h1>
+        <header>
+        <h1>{% block heading %}<a href="/">Booksonas</a>{% endblock %}</h1>
+        <nav>{% if user.is_authenticated %}{% include "actions_list.html" %}{% endif %}</nav>
         {% if messages %}
         <ul class="messages" style="list-style: none">
             {% for message in messages %}
@@ -29,10 +27,15 @@
             {% endfor %}
         </ul>
         {% endif %}
+        </header>
+        <article>
         {% block content %}
+        </article>
         {% endblock %}
+        <footer>
         {% if user.is_authenticated %}
-        <p><a href="{% url "book-list" %}">Book List</a> | <a href="{% url "books-import" %}">Import Books</a> | <a href="{% url "account_logout" %}">Sign Out</a> | <a href="http://goo.gl/forms/3crxucI0p2" target="_blank">Send Feedback</a></p>
+        <nav><p><a href="{% url "book-list" %}">Book List</a> | <a href="{% url "books-import" %}">Import Books</a> | <a href="{% url "account_logout" %}">Sign Out</a> | <a href="http://goo.gl/forms/3crxucI0p2" target="_blank">Send Feedback</a></p></nav>
         {% endif %}
+        </footer>
     </body>
 </html>

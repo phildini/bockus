@@ -2,7 +2,6 @@
 
 {% block heading %}{{ block.super }} - Shelves{% endblock %}
 {% block content %}
-{% include "actions_list.html" %}
 {% if not object_list %}<p>Shelves are collections of books that you curate in any way that makes sense to you. We've provided some default shelves to get you started.</p>{% endif %}
 <ul>
     <li class="shelf"><a href="{% url "shelf-last-week" %}">Added in Last Week</a>

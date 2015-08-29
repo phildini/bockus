@@ -82,8 +82,8 @@ class BookListView(LibraryMixin, ListView):
 
     model = Book
     template_name = "book_list.html"
-    paginate_by = 25
-    paginate_orphans = 5
+    paginate_by = settings.LIST_PAGINATE_BY
+    paginate_orphans = settings.LIST_PAGINATE_ORPHANS
 
     def get_success_url(self):
         return reverse('book-list')

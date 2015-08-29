@@ -2,9 +2,8 @@
 
 {% block heading %}{{ block.super }} - Search{% endblock %}
 {% block content %}
-{% include "search_form.html" %}
 {% if query %}
-    <h3>Results</h3>
+    <h3>Search Results</h3>
     {% for result in page_obj.object_list %}
         <p>
             {% if result.object.is_book %}

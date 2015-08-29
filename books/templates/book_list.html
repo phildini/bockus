@@ -3,7 +3,6 @@
 {% block heading %}{{ block.super }} - Books{% endblock %}
 {% block content %}
 {% if object_list %}
-{% include "actions_list.html" %}
 <form action="{% url "book-list" %}" method="POST">
     {% csrf_token %}
     <input id="id_page" name="page" value="{{ page_obj.number }}" type="hidden" />
