@@ -4,7 +4,7 @@ from books.models import Book, Series
 
 class BookIndex(indexes.SearchIndex, indexes.Indexable):
 
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.NgramField(document=True, use_template=True)
     library = indexes.IntegerField(model_attr="library_id")
 
     def get_model(self):
@@ -19,7 +19,7 @@ class BookIndex(indexes.SearchIndex, indexes.Indexable):
 
 class SeriesIndex(indexes.SearchIndex, indexes.Indexable):
 
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.NgramField(document=True, use_template=True)
     library = indexes.IntegerField(model_attr="library_id")
 
     def get_model(self):
