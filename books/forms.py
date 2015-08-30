@@ -1,5 +1,6 @@
 import dropbox
 from django import forms
+from books.models import Series
 
 
 class ImportForm(forms.Form):
@@ -17,4 +18,20 @@ class ImportForm(forms.Form):
             required=True,
             choices=choices,
             widget=forms.CheckboxSelectMultiple(),
+        )
+
+
+class BookForm(forms.Form):
+
+    author = forms.CharField(max_length=255,required=False)
+
+    def __init__(self, *args, **kwargs):
+        library = kwargs.pop('library')
+        super(BookForm, self).__init__(*args, **kwargs)
+        series_choices = [
+            (series.id, series.series) for series in Series.objects.filter(library==library)
+        ]
+        self.fields['series'] = forms.ChoiceField(
+            required=False,
+            choices=series_choices,
         )

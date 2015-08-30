@@ -112,7 +112,8 @@ class BookListView(LibraryMixin, ListView):
         paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
         choices = [(book.id, book.title) for book in paginator.page(page_num)]
         actions = [
-            ('shelve', 'Add to shelf...'),
+            ('shelve', 'Add to shelf'),
+            ('edit', 'Edit'),
             ('merge', 'Merge Selected'),
             ('delete', 'Delete Selected'),
         ]
@@ -149,6 +150,8 @@ class BookListView(LibraryMixin, ListView):
                     return redirect(reverse('books-shelve'))
                 if form.cleaned_data.get('actions') == 'delete':
                     return redirect(reverse('books-delete'))
+                if form.cleaned_data.get('actions') == 'edit':
+                    return redirect(reverse('books-edit'))
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
@@ -431,6 +434,12 @@ class DeleteBooksView(TemplateView):
             library__librarian__user=self.request.user,
         )
         return context
+
+
+class MultiBookEditView(FormView):
+
+    template_name = "edit_books.html"
+    
 
 
 class SendBookView(View):
