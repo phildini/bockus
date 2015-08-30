@@ -4,17 +4,19 @@
 {% block content %}
 {% if query %}
     <h3>Search Results</h3>
+    <ul>
     {% for result in page_obj.object_list %}
-        <p>
+        <li>
             {% if result.object.is_book %}
             <a href="{{ result.object.get_absolute_url }}">Book: {{ result.object }}</a>
             {% elif result.object.is_series %}
             <a href="{{ result.object.get_absolute_url }}">Series: {{ result.object }}</a>
             {% endif %}
-        </p>
+        </li>
     {% empty %}
-        <p>No results found.</p>
+        <li>No results found.</li>
     {% endfor %}
+    </ul>
     {% if page_obj.has_previous or page_obj.has_next %}
         <div>
             {% if page_obj.has_previous %}<a href="?q={{ query }}&amp;page={{ page_obj.previous_page_number }}">{% endif %}&laquo; Previous{% if page_obj.has_previous %}</a>{% endif %}
