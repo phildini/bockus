@@ -110,7 +110,15 @@ class BookListView(LibraryMixin, ListView):
         else:
             page_num = int(form.data.get('page', 1))
         paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
-        choices = [(book.id, book.title) for book in paginator.page(page_num)]
+        choices = [
+            (
+                book.id, 
+                {
+                    'book':book,
+                    'last_emailed': book.last_emailed(self.request.user),
+                }
+            ) for book in paginator.page(page_num)
+        ]
         actions = [
             ('shelve', 'Add to shelf...'),
             ('merge', 'Merge Selected'),

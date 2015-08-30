@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block heading %}{{ block.super }} - Books{% endblock %}
 {% block content %}
@@ -6,8 +7,12 @@
 <form action="{% url "book-list" %}" method="POST">
     {% csrf_token %}
     <input id="id_page" name="page" value="{{ page_obj.number }}" type="hidden" />
-    <ul>{% for id, title in form.fields.books.choices %}
-        <li><input value="{{ id }}" name="books" type="checkbox"> <a href="{% url "book-detail" pk=id %}">{{ title }}</a> (<a href="{% url "book-edit" pk=id %}">Edit</a> | <a href="{% url "book-delete" pk=id %}">Delete</a>)</li>
+    <ul>{% for id, book_obj in form.fields.books.choices %}
+        <li>
+            <input value="{{ id }}" name="books" type="checkbox" /> 
+            <a href="{% url "book-detail" pk=id %}">{{ book_obj.book }}</a> (<a href="{% url "book-edit" pk=id %}">Edit</a> | <a href="{% url "book-delete" pk=id %}">Delete</a>)
+            {% if book_obj.last_emailed %}Last read {{ book_obj.last_emailed | naturalday}}{% endif %}
+        </li>
     {% endfor %}</ul>
     {{ form.actions }} <input id="save_book" type="submit" value="Submit" />
 </form>

@@ -11,7 +11,6 @@
 {% include "book_list_snippet.html" %}
 {% include "page_controls_snippet.html" %}
 {% if shelf %}
-<p><a href="{% url "shelf-edit" pk=shelf.id %}">Edit</a> | <a href="{% url "shelf-delete" pk=shelf.id %}">Delete</a></p>
+<p><a href="{% url "shelf-edit" pk=shelf.id %}">Edit shelf</a> | <a href="{% url "shelf-delete" pk=shelf.id %}">Delete shelf</a></p>
 {% endif %}
-<p><a href="{% url "shelf-list" %}">Shelf List</a></p>
 {% endblock %}

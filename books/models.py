@@ -50,6 +50,9 @@ class Book(TimeStampedModel):
             blob['number_in_series'] = self.number_in_series
         return blob
 
+    def bookfiles(self):
+        return BookFileVersion.objects.filter(book=self)
+
     @property
     def is_book(self):
         return True
@@ -101,6 +104,17 @@ class Book(TimeStampedModel):
             return self.epub
         return self.pdf
 
+    def last_emailed(self, user):
+        try:
+            book_email = BookEmail.objects.filter(
+                book_file__in=self.bookfiles(),
+                status=BookEmail.SENT,
+                reader__user=user,
+            ).order_by('-created')[0]
+            return book_email.created
+        except (BookEmail.DoesNotExist, IndexError):
+            return None
+
 
 class BookFileVersion(TimeStampedModel):
     DROPBOX = 'dropbox'
@@ -144,7 +158,11 @@ class BookEmail(TimeStampedModel):
     )
 
     book_file = models.ForeignKey('BookFileVersion')
-    reader = models.ForeignKey(Reader)
+    reader = models.ForeignKey(Reader,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUSES,
