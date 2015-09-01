@@ -19,6 +19,8 @@ class Reader(TimeStampedModel):
     email = models.EmailField()
 
     def __str__(self):
+        if self.name:
+            return self.name
         return "{}'s {}".format(self.user, self.kind)
 
     def get_absolute_url(self):
