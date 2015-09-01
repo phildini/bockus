@@ -86,7 +86,7 @@ class CreateReaderView(UserOwnedObjectMixin, CreateView):
 class EditReaderView(UserOwnedObjectMixin, UpdateView):
 
     model = Reader
-    template_name = "add_or_edit_reader.html"
+    template_name = "reader_edit.html"
     fields = ['name', 'kind', 'email']
 
     def get_success_url(self):
