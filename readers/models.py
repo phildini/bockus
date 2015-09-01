@@ -9,8 +9,8 @@ class Reader(TimeStampedModel):
     IBOOKS = 'iBooks'
     KINDLE = 'Kindle'
     TYPES = (
-        (IBOOKS, IBOOKS),
-        (KINDLE, KINDLE),
+        (IBOOKS, 'iBooks (.epub, .pdf)'),
+        (KINDLE, 'Kindle (.mobi, .pdf)'),
     )
 
     name = models.CharField(max_length=100, null=True)
