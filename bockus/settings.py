@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'books',
     'libraries',
     'readers',
+    'invites',
 )
 
 MIDDLEWARE_CLASSES = (

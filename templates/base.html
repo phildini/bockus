@@ -35,7 +35,7 @@
         {% endblock %}
         <footer>
         {% if user.is_authenticated %}
-        <nav><p><a href="{% url "book-list" %}">Book List</a> | <a href="{% url "books-import" %}">Import Books</a> | <a href="{% url "account_logout" %}">Sign Out</a> | <a href="http://goo.gl/forms/3crxucI0p2" target="_blank">Send Feedback</a></p></nav>
+        <nav><p><a href="{% url "book-list" %}">Book List</a> | <a href="{% url "books-import" %}">Import Books</a> | <a href="{% url "create-invite" %}">Invite Others</a> | <a href="{% url "account_logout" %}">Sign Out</a> | <a href="http://goo.gl/forms/3crxucI0p2" target="_blank">Send Feedback</a></p></nav>
         {% endif %}
         </footer>
     </body>

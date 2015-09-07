@@ -20,8 +20,25 @@ import books.urls
 from books.views import LibrarySearchView
 import readers.urls
 
+from invites.views import (
+    CreateInviteView,
+    AcceptInviteView,
+    ChangePasswordView,
+)
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(
+        r'^set-password/$',
+        ChangePasswordView.as_view(),
+        name='set-password',
+    ),
+    url(r'^invites/add$', CreateInviteView.as_view(), name='create-invite'),
+    url(
+        r'^invites/accept/(?P<key>[\w-]+)/$',
+        AcceptInviteView.as_view(),
+        name='accept-invite',
+    ),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^invitations/', include('invitations.urls', namespace='invitations')),
     url(r'^books/', include(books.urls.bookpatterns)),
