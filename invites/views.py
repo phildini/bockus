@@ -16,7 +16,10 @@ from django.views.generic import (
     View,
 )
 
-from libraries.models import Librarian
+from libraries.models import (
+    Library,
+    Librarian,
+)
 from .models import Invitation
 from .forms import InvitationForm
 
@@ -76,6 +79,9 @@ class AcceptInviteView(View):
         user = authenticate(username=invite.email, password=password_plain)
         if invite.library:
             Librarian.objects.create(user=user, library=invite.library)
+        else:
+            library = Library.objects.create(name="{}'s library".format(user))
+            Librarian.objects.create(user=user, library=library)
         login(request, user)
         invite.status = invite.ACCEPTED
         invite.save()
