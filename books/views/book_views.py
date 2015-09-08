@@ -183,7 +183,11 @@ class BookView(LibraryMixin, FormView):
     template_name = "book.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.object = get_object_or_404(Book.objects, pk=kwargs.get('pk'))
+        self.object = get_object_or_404(
+            Book.objects,
+            pk=kwargs.get('pk'),
+            library__librarian__user=self.request.user,
+        )
         return super(BookView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
