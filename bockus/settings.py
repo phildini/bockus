@@ -56,7 +56,6 @@ INSTALLED_APPS = (
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.dropbox_oauth2',
-    'invitations',
     'haystack',
     'books',
     'libraries',
