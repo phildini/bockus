@@ -12,6 +12,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
+STATIC_URL = '//logtacts.s3.amazonaws.com/assets/'
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECRET_KEY = get_env_variable("SECRET_KEY")
