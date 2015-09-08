@@ -242,7 +242,11 @@ class BookView(LibraryMixin, FormView):
         return reverse('book-detail', args=[self.object.pk])
 
     def form_valid(self, form):
-        shelf = get_object_or_404(Shelf.objects, pk=form.cleaned_data.get('shelf'))
+        shelf = get_object_or_404(
+            Shelf.objects,
+            pk=form.cleaned_data.get('shelf'),
+            library__librarian__user=self.request.user,
+        )
         shelved_book, created = BookOnShelf.objects.get_or_create(shelf=shelf, book=self.object)
         messages.add_message(
             self.request,
