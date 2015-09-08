@@ -9,9 +9,6 @@
         },
         {
             "path": "/Users/phildini/.virtualenvs/bockus/lib/python3.4/site-packages/django"
-        },
-        {
-            "path": "/Users/phildini/.virtualenvs/bockus/lib/python3.4/site-packages/invitations"
         }
 	]
 }
