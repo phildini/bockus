@@ -80,7 +80,7 @@ class AcceptInviteView(View):
         if invite.library:
             Librarian.objects.create(user=user, library=invite.library)
         else:
-            library = Library.objects.create(name="{}'s library".format(user))
+            library = Library.objects.create(title="{}'s library".format(user))
             Librarian.objects.create(user=user, library=library)
         login(request, user)
         invite.status = invite.ACCEPTED

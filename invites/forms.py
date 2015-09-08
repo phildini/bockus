@@ -31,7 +31,7 @@ class InvitationAdminAddForm(forms.ModelForm):
 
     class Meta:
         model = Invitation
-        fields = ['email', 'book', 'sender', 'status']
+        fields = ['email', 'library', 'sender', 'status']
 
     def save(self, *args, **kwargs):
         self.instance.key = get_random_string(32).lower()
