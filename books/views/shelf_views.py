@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
-
+from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.shortcuts import (
     get_object_or_404,
     redirect,
 )
+from django.utils import timezone
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -20,12 +20,10 @@ from books.models import (
     BookOnShelf,
     Shelf,
 )
-
 from books.views import (
     SEARCH_UPDATE_MESSAGE,
     LibraryMixin,
 )
-
 from readers.models import Reader
 
 class ShelfListView(LibraryMixin, ListView):
@@ -117,9 +115,8 @@ class LastWeekShelfView(LibraryMixin, ListView):
 
     def get_queryset(self):
         queryset = super(LastWeekShelfView, self).get_queryset()
-        last_week = datetime.now() - timedelta(days=7)
-        queryset.filter(created__gt=last_week)
-        return queryset
+        last_week = timezone.now() - timedelta(days=7)
+        return queryset.filter(created__gt=last_week)
 
     def get_context_data(self, **kwargs):
         context = super(LastWeekShelfView, self).get_context_data(**kwargs)
@@ -137,9 +134,8 @@ class LastMonthShelfView(LibraryMixin, ListView):
 
     def get_queryset(self):
         queryset = super(LastMonthShelfView, self).get_queryset()
-        last_week = datetime.now() - timedelta(days=30)
-        queryset.filter(created__gt=last_week)
-        return queryset
+        last_month = timezone.now() - timedelta(days=30)
+        return queryset.filter(created__gt=last_month)
 
     def get_context_data(self, **kwargs):
         context = super(LastMonthShelfView, self).get_context_data(**kwargs)
